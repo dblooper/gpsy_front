@@ -1,0 +1,41 @@
+
+.logo{
+    font-weight: bold;
+    font-size: 15px;
+    text-align: left;
+    border-right: 1px solid dimgray;
+
+}
+
+.main-navbar-layout {
+    background: lightgreen;
+    border: 2px solid dimgray;
+    border-radius: 5px;
+}
+
+.router-link {
+    font-size: 16px;
+    margin: 60px;
+    width: 10%;
+    color: black;
+}
+
+.navbar-items {
+    display: block;
+    width: 100%;
+    margin-left: 5%;
+    font-weight: bold;
+    text-align: left;
+}
+
+.grid-title {
+    font-size: 25px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.forms-style {
+    width: 50%;
+    border: 2px solid dimgray;
+    border-radius: 5px;
+}

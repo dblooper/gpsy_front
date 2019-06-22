@@ -1,0 +1,52 @@
+package com.gpsy_front.service;
+
+import com.gpsy_front.domain.RecentTrack;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Component;
+import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+import org.springframework.web.util.UriComponentsBuilder;
+
+import javax.ws.rs.GET;
+import javax.ws.rs.client.Client;
+import javax.ws.rs.client.ClientBuilder;
+import javax.ws.rs.client.WebTarget;
+import java.net.URI;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+
+public class RESTService implements WebMvcConfigurer {
+
+    private Client client;
+    private WebTarget webTarget;
+
+    private RestTemplate restTemplate = new RestTemplate();
+
+
+    public List<RecentTrack> getRecentTracksFromApi() {
+
+        URI uri = UriComponentsBuilder.fromHttpUrl("http://localhost:8080/v1/gpsy/tracks/recent").build().encode().toUri();
+
+        try {
+            RecentTrack[] recentTracks = restTemplate.getForObject(uri, RecentTrack[].class);
+            return Optional.ofNullable(recentTracks).map(Arrays::asList).orElse(new ArrayList<>());
+        } catch(RestClientException e) {
+            System.out.println(e.getMessage());
+            return new ArrayList<>();
+        }
+
+    }
+
+//    public List<RecentTrack> getRecentTracks() {
+//        List<RecentTrack> fetchedTracks = new ArrayList<>();
+//        for(int i = 0; i < 10; i++) {
+//            fetchedTracks.add(new RecentTrack("id" + i, "title" + i, "author" + i, "date"));
+//        }
+//
+//        return fetchedTracks;
+//    }
+}
