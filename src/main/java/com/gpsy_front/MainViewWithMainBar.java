@@ -25,9 +25,9 @@ public class MainViewWithMainBar extends Div implements RouterLayout {
         icon.setSize("50px");
         Label label = new Label("GPSY APP");
         label.setClassName("logo");
-        addMenuElement(Playlists.class, "Playlists");
-        addMenuElement(Tracks.class, "Tracks");
-        addMenuElement(Lyrics.class, "Lyrics");
+        addMenuElement(Playlists.class, "Playlists", new Icon(VaadinIcon.INDENT));
+        addMenuElement(Tracks.class, "Tracks", new Icon(VaadinIcon.PLAY));
+        addMenuElement(Lyrics.class, "Lyrics", new Icon(VaadinIcon.CLIPBOARD_TEXT));
         logo.add(icon, label);
         logo.setAlignItems(FlexComponent.Alignment.CENTER);
         mainHorizontalLayout.add(logo, horizontalLayout);
@@ -43,10 +43,11 @@ public class MainViewWithMainBar extends Div implements RouterLayout {
 
     }
 
-    private void addMenuElement(Class<? extends Component> navigationTarget, String name) {
+    private void addMenuElement(Class<? extends Component> navigationTarget, String name, Icon icon) {
         RouterLink routerLink = new RouterLink(name, navigationTarget);
         routerLink.setClassName("router-link");
-        horizontalLayout.add(routerLink);
+        icon.setSize("30px");
+        horizontalLayout.add(icon, routerLink);
     }
 
 }

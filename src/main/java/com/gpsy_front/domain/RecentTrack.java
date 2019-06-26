@@ -1,17 +1,21 @@
 package com.gpsy_front.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.vaadin.flow.i18n.I18NProvider;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 @Component
 @NoArgsConstructor
 @Getter
+@Setter
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class RecentTrack {
 
     private String trackId;
@@ -85,7 +89,6 @@ public class RecentTrack {
 
     @Override
     public String toString() {
-        return "title='" + title + '\'' +
-                ", authors='" + authors + '\'';
+        return "[ " + title + " ]";
     }
 }

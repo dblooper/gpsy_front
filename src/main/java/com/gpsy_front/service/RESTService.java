@@ -1,5 +1,7 @@
 package com.gpsy_front.service;
 
+import com.gpsy_front.domain.Playlist;
+import com.gpsy_front.domain.PopularTrack;
 import com.gpsy_front.domain.RecentTrack;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -38,8 +40,35 @@ public class RESTService implements WebMvcConfigurer {
             System.out.println(e.getMessage());
             return new ArrayList<>();
         }
-
     }
+
+    public List<PopularTrack> getPopularTracksFromApi() {
+        URI uri = UriComponentsBuilder.fromHttpUrl("http://localhost:8080/v1/gpsy/tracks/popular").build().encode().toUri();
+
+        try {
+            PopularTrack[] popularTracks = restTemplate.getForObject(uri, PopularTrack[].class);
+            return Optional.ofNullable(popularTracks).map(Arrays::asList).orElse(new ArrayList<>());
+        }catch(RestClientException e) {
+            System.out.println(e.getMessage());
+            return new ArrayList<>();
+        }
+    }
+
+
+    public List<Playlist> getPlaylistsFromApi() {
+        URI uri = UriComponentsBuilder.fromHttpUrl("http://localhost:8080/v1/gpsy/playlists/current").build().encode().toUri();
+
+        try {
+            Playlist[] playlists = restTemplate.getForObject(uri, Playlist[].class);
+            List<Playlist> retrievedPlaylists = Optional.ofNullable(playlists).map(Arrays::asList).orElse(new ArrayList<>());
+            retrievedPlaylists.stream().forEach(Playlist::countTracks);
+            return retrievedPlaylists;
+        }catch(RestClientException e) {
+            System.out.println(e.getMessage());
+            return new ArrayList<>();
+        }
+    }
+
 
 //    public List<RecentTrack> getRecentTracks() {
 //        List<RecentTrack> fetchedTracks = new ArrayList<>();

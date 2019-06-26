@@ -1,4 +1,4 @@
-package com.gpsy_front.domain.forms;
+package com.gpsy_front.forms;
 
 import com.gpsy_front.domain.RecentTrack;
 import com.gpsy_front.service.RESTService;
@@ -42,7 +42,6 @@ public class RecentTracksForm extends FormLayout {
                         event.getOldValue(), event.getValue());
                 textField.setText(message);
             });
-            recentTracksGrid.setMaxWidth("900px");
             recentTracksGrid.setItems(restService.getRecentTracksFromApi());
 
 //            playlistSelect.setRequiredIndicatorVisible(true);
@@ -55,7 +54,9 @@ public class RecentTracksForm extends FormLayout {
 
             verticalLayout.add(gridLabel, recentTracksGrid, textField, playlistSelect, acceptButton, textSave);
             verticalLayout.addClassName("forms-style");
+            verticalLayout.setMinWidth("100%");
             add(verticalLayout);
+            setSizeFull();
 
         }
 

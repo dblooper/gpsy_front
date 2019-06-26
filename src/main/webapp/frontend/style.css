@@ -15,7 +15,7 @@
 
 .router-link {
     font-size: 16px;
-    margin: 60px;
+    margin-right: 2%;
     width: 10%;
     color: black;
 }
@@ -35,7 +35,17 @@
 }
 
 .forms-style {
-    width: 50%;
+    width: 100%;
     border: 2px solid dimgray;
     border-radius: 5px;
+}
+
+#forms-style {
+    width: 100%;
+    border: 2px solid dimgray;
+    border-radius: 5px;
+}
+
+vaadin-grid-cell-content {
+    font-size: 14px;
 }

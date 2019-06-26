@@ -1,4 +1,4 @@
-package com.gpsy_front.domain.layouts;
+package com.gpsy_front.layouts;
 
 import com.vaadin.flow.component.UI;
 
