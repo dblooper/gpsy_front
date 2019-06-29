@@ -6,6 +6,7 @@ import com.gpsy_front.domain.*;
 import com.vaadin.flow.component.html.Anchor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
@@ -21,14 +22,30 @@ import javax.ws.rs.client.WebTarget;
 import java.net.URI;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
-public class RestService implements WebMvcConfigurer {
+public final class RestService implements WebMvcConfigurer {
+
+    private static RestService restService;
 
     private Client client;
     private WebTarget webTarget;
 
     private RestTemplate restTemplate = new RestTemplate();
 
+    private RestService() {}
+
+    public static RestService getInstance() {
+
+        if(restService == null) {
+            synchronized(RestService.class) {
+                if(restService == null) {
+                    return new RestService();
+                }
+            }
+        }
+        return restService;
+    }
 
     public List<RecentTrack> getRecentTracksFromApi() {
 
@@ -87,23 +104,31 @@ public class RestService implements WebMvcConfigurer {
         }
     }
 
-    public Playlist updatePlaylistWithPopularTrack(Playlist playlist, Set<PopularTrack> popularTracks) {
-        Gson gson = new Gson();
+    public void updatePlaylistWithPopularTrack(Playlist playlist, Set<ParentTrack> popularTracks) {
+        updatePlaylist(playlist, popularTracks);
+    }
 
-        List<PlaylistTrack> popularTracksTooUpdate = popularTracks.stream()
+    public void updatePlaylistWithRecentTrack(Playlist playlist, Set<ParentTrack> recentrTracks) {
+        updatePlaylist(playlist, recentrTracks);
+    }
+
+    public void updatePlaylist(Playlist playlist, Set<ParentTrack> parentTracks) {
+        Gson gson = new Gson();
+        List<PlaylistTrack> popularTracksTooUpdate = parentTracks.stream()
                 .map(track -> new PlaylistTrack(track.getTrackId(), track.getTitle(), track.getAuthors()))
                 .collect(Collectors.toList());
 
         Playlist playlistUpdated = new Playlist(playlist.getName(), playlist.getPlaylistStringId(), popularTracksTooUpdate);
 
         String jsonContent = gson.toJson(playlistUpdated);
-//        URI uri = UriComponentsBuilder.fromHttpUrl("")
-//                .build().encode().toUri();
-//
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.setContentType(MediaType.APPLICATION_JSON);
+        URI uri = UriComponentsBuilder.fromHttpUrl("http://localhost:8080/v1/gpsy/playlists/addToPlaylist")
+                .build().encode().toUri();
 
-        System.out.println(jsonContent);
-        return new Playlist();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<String> entity = new HttpEntity<>(jsonContent, headers);
+        String answer = restTemplate.postForObject(uri, entity, String.class);
+
+        System.out.println(answer);
     }
 }

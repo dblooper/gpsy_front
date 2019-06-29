@@ -19,13 +19,12 @@ public class PlaylistChoseForm extends FormLayout {
     private VerticalLayout verticalLayout = new VerticalLayout();
     private Button acceptButton = new Button("Save");
     private ComboBox<Playlist> playlistSelect = new ComboBox<>("Playlist");
-    private RestService restService = new RestService();
+    private RestService restService = RestService.getInstance();
     private Binder<RecentTrack> binder = new Binder<>(RecentTrack.class);
 
-    public PlaylistChoseForm(ParentForm parentForm) {
+    public PlaylistChoseForm(ParentForm parentForm, List<Playlist> playlists) {
         this.parentForm = parentForm;
         playlistSelect.setLabel("Playlist");
-        List<Playlist> playlists = restService.getPlaylistsFromApi();
         playlistSelect.setItems(playlists);
         playlistSelect.setItemLabelGenerator(Playlist::getName);
         playlistSelect.setPlaceholder("Choose the playlist");

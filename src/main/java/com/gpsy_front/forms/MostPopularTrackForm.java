@@ -1,5 +1,7 @@
 package com.gpsy_front.forms;
 
+import com.gpsy_front.domain.ParentTrack;
+import com.gpsy_front.domain.Playlist;
 import com.gpsy_front.domain.PopularTrack;
 import com.gpsy_front.service.RestService;
 import com.vaadin.flow.component.Text;
@@ -8,16 +10,21 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 public class MostPopularTrackForm extends FormLayout implements ParentForm {
 
-    private RestService restService = new RestService();
+    private RestService restService = RestService.getInstance();
     VerticalLayout verticalLayout = new VerticalLayout();
-    private PlaylistChoseForm playlistChoseForm = new PlaylistChoseForm(this);
+    private PlaylistChoseForm playlistChoseForm;
     private Grid<PopularTrack> recentTracksGrid = new Grid<>(PopularTrack.class);
     private Text textField = new Text("No track choosen");
     private Label gridLabel = new Label("Most popular tracks");
 
-    public MostPopularTrackForm() {
+    public MostPopularTrackForm(List<Playlist> playlists) {
+        playlistChoseForm = new PlaylistChoseForm(this, playlists);
         gridLabel.setClassName("grid-title");
         gridLabel.setSizeFull();
         recentTracksGrid.setColumns("title", "authors", "popularity");
@@ -38,7 +45,6 @@ public class MostPopularTrackForm extends FormLayout implements ParentForm {
 
     }
 
-
     public int getGridSelectedItemsSize() {
         return this.recentTracksGrid.getSelectedItems().size();
     }
@@ -58,8 +64,10 @@ public class MostPopularTrackForm extends FormLayout implements ParentForm {
 
     @Override
     public void saveAllToSpotify() {
-        restService.updatePlaylistWithPopularTrack(playlistChoseForm.getCurrentPlaylist(),
-                                                recentTracksGrid.asMultiSelect().getSelectedItems());
+        Set<ParentTrack> parentTracks = recentTracksGrid.asMultiSelect().getSelectedItems().stream()
+                .map(track -> (ParentTrack)track)
+                .collect(Collectors.toSet());
+        restService.updatePlaylistWithPopularTrack(playlistChoseForm.getCurrentPlaylist(), parentTracks);
     }
 
     @Override

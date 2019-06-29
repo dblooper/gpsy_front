@@ -20,7 +20,7 @@ public class PlaylistForm extends FormLayout {
     private Label gridLabel = new Label("Playlists");
     private Button acceptButton = new Button("Save");
     private ComboBox<String> playlistTracks = new ComboBox<>("Playlist");
-    private RestService restService = new RestService();
+    private RestService restService = RestService.getInstance();
     private PlaylistTrackForm playlistTrackForm = new PlaylistTrackForm(this);
 
     public PlaylistForm() {

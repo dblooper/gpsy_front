@@ -5,4 +5,6 @@ import com.vaadin.flow.component.grid.Grid;
 public interface ParentTrack {
 
     String getTitle();
+    String getTrackId();
+    String getAuthors();
 }

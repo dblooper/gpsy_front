@@ -26,7 +26,7 @@ public class RecentTrack implements ParentTrack {
 
     private LocalDateTime playDate;
 
-    public RecentTrack(Long id, String trackId, String title, String authors, LocalDateTime playDate) {
+    public RecentTrack(String trackId, String title, String authors, LocalDateTime playDate) {
         this.trackId = trackId;
         this.title = title;
         this.authors = authors;

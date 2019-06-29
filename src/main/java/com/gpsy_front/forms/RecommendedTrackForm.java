@@ -1,6 +1,8 @@
 package com.gpsy_front.forms;
 
 import com.gpsy_front.Tracks;
+import com.gpsy_front.domain.ParentTrack;
+import com.gpsy_front.domain.Playlist;
 import com.gpsy_front.domain.RecentTrack;
 import com.gpsy_front.domain.RecommendedTrack;
 import com.gpsy_front.service.RestService;
@@ -15,12 +17,13 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 public class RecommendedTrackForm extends FormLayout implements ParentForm{
 
-    private RestService restService = new RestService();
-    private PlaylistChoseForm playlistChoseForm = new PlaylistChoseForm(this);
+    private RestService restService = RestService.getInstance();
+    private PlaylistChoseForm playlistChoseForm;
     private VerticalLayout verticalLayout = new VerticalLayout();
     private Grid<RecommendedTrack> recentTracksGrid = new Grid<>(RecommendedTrack.class);
     private Text textField = new Text("No track chosen");
@@ -30,7 +33,8 @@ public class RecommendedTrackForm extends FormLayout implements ParentForm{
 
 
 
-    public RecommendedTrackForm() {
+    public RecommendedTrackForm(List<Playlist> playlists) {
+        this.playlistChoseForm = new PlaylistChoseForm(this, playlists);
         gridLabel.setClassName("grid-title");
         gridLabel.setSizeFull();
         recentTracksGrid.setColumns("title", "authors");
@@ -76,8 +80,11 @@ public class RecommendedTrackForm extends FormLayout implements ParentForm{
         return this.recentTracksGrid;
     }
 
-    @Override
     public void saveAllToSpotify() {
+        Set<ParentTrack> parentTracks = recentTracksGrid.asMultiSelect().getSelectedItems().stream()
+                .map(track -> (ParentTrack)track)
+                .collect(Collectors.toSet());
+        restService.updatePlaylistWithPopularTrack(playlistChoseForm.getCurrentPlaylist(), parentTracks);
     }
 
     @Override

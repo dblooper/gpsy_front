@@ -18,7 +18,7 @@ import org.springframework.stereotype.Component;
 public class RecommendedTrack implements ParentTrack{
 
     @JsonProperty("stringId")
-    private String stringId;
+    private String trackId;
 
     @JsonProperty("titles")
     private String title;
