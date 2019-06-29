@@ -1,20 +1,12 @@
 package com.gpsy_front.forms;
 
-import com.gpsy_front.domain.ParentTrack;
-import com.gpsy_front.domain.Playlist;
 import com.gpsy_front.domain.PopularTrack;
-import com.gpsy_front.domain.RecentTrack;
 import com.gpsy_front.service.RestService;
 import com.vaadin.flow.component.Text;
-import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.data.binder.Binder;
-
-import java.util.List;
 
 public class MostPopularTrackForm extends FormLayout implements ParentForm {
 
@@ -66,6 +58,8 @@ public class MostPopularTrackForm extends FormLayout implements ParentForm {
 
     @Override
     public void saveAllToSpotify() {
+        restService.updatePlaylistWithPopularTrack(playlistChoseForm.getCurrentPlaylist(),
+                                                recentTracksGrid.asMultiSelect().getSelectedItems());
     }
 
     @Override

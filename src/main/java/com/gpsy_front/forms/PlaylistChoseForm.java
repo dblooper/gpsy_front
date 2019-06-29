@@ -37,6 +37,10 @@ public class PlaylistChoseForm extends FormLayout {
         setSizeFull();
     }
 
+    public Playlist getCurrentPlaylist() {
+        return playlistSelect.getValue();
+    }
+
     private void save(Playlist playlist) {
         StringBuilder stringBuilder = new StringBuilder("Saved: ");
         String outputText;

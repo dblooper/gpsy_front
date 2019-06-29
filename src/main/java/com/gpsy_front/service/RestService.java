@@ -1,12 +1,13 @@
 package com.gpsy_front.service;
 
-import com.gpsy_front.domain.Playlist;
-import com.gpsy_front.domain.PopularTrack;
-import com.gpsy_front.domain.RecentTrack;
-import com.gpsy_front.domain.RecommendedTrack;
+import com.google.gson.Gson;
+import com.gpsy_front.Tracks;
+import com.gpsy_front.domain.*;
 import com.vaadin.flow.component.html.Anchor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
@@ -18,10 +19,8 @@ import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.WebTarget;
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class RestService implements WebMvcConfigurer {
 
@@ -88,5 +87,23 @@ public class RestService implements WebMvcConfigurer {
         }
     }
 
+    public Playlist updatePlaylistWithPopularTrack(Playlist playlist, Set<PopularTrack> popularTracks) {
+        Gson gson = new Gson();
 
+        List<PlaylistTrack> popularTracksTooUpdate = popularTracks.stream()
+                .map(track -> new PlaylistTrack(track.getTrackId(), track.getTitle(), track.getAuthors()))
+                .collect(Collectors.toList());
+
+        Playlist playlistUpdated = new Playlist(playlist.getName(), playlist.getPlaylistStringId(), popularTracksTooUpdate);
+
+        String jsonContent = gson.toJson(playlistUpdated);
+//        URI uri = UriComponentsBuilder.fromHttpUrl("")
+//                .build().encode().toUri();
+//
+//        HttpHeaders headers = new HttpHeaders();
+//        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        System.out.println(jsonContent);
+        return new Playlist();
+    }
 }
