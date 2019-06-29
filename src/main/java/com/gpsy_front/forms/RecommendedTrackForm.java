@@ -59,6 +59,7 @@ public class RecommendedTrackForm extends FormLayout implements ParentForm{
 
         button.addClickListener(event ->
             recentTracksGrid.setItems(restService.getRecommendedTrcksFromApi()));
+
         playlistChoseForm.setVisible(false);
         verticalLayout.add(gridLabel, recentTracksGrid, textField, button, playlistChoseForm);
         verticalLayout.addClassName("forms-style");

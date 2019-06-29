@@ -2,6 +2,7 @@ package com.gpsy_front.forms;
 
 import com.gpsy_front.domain.Playlist;
 import com.gpsy_front.domain.PlaylistTrack;
+import com.gpsy_front.service.RestService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
@@ -17,6 +18,7 @@ import java.util.List;
 
 public class PlaylistTrackForm extends VerticalLayout {
 
+    private RestService restService = RestService.getInstance();
     private Grid<PlaylistTrack> playlistTrackGrid = new Grid<>(PlaylistTrack.class);
     private VerticalLayout mainContent = new VerticalLayout();
     private HorizontalLayout updateNameArea = new HorizontalLayout();
@@ -31,11 +33,15 @@ public class PlaylistTrackForm extends VerticalLayout {
         this.playlistForm = playlistForm;
 
         playlistTrackGrid.setColumns("title", "authors");
-        playlistTrackGrid.setSelectionMode(Grid.SelectionMode.SINGLE);
+        playlistTrackGrid.setSelectionMode(Grid.SelectionMode.MULTI);
         playlistTrackGrid.setItems(tracks);
-
         updateNameArea.add(name, updateNameButton);
         updateNameArea.setAlignItems(Alignment.END);
+        deleteButton.addClickListener(event ->{
+            deleteTrack();
+            playlistTrackGrid.setItems(tracks);
+            playlistForm.refresh();
+        });
         mainContent.add(updateNameArea, playlistTrackGrid, deleteButton);
         add(mainContent);
         mainContent.addClassName("forms-style");
@@ -60,5 +66,9 @@ public class PlaylistTrackForm extends VerticalLayout {
             setTracks(playlist.getTracks());
             setVisible(true);
         }
+    }
+
+    public void deleteTrack() {
+        restService.deleteTrackFromPlaylist(playlistForm.getCurrentPlaylist(), playlistTrackGrid.asMultiSelect().getSelectedItems());
     }
 }

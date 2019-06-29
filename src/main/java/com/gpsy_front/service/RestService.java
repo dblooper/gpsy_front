@@ -6,30 +6,22 @@ import com.gpsy_front.domain.*;
 import com.vaadin.flow.component.html.Anchor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
+import org.springframework.http.*;
 import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import javax.ws.rs.GET;
-import javax.ws.rs.client.Client;
-import javax.ws.rs.client.ClientBuilder;
-import javax.ws.rs.client.WebTarget;
 import java.net.URI;
 import java.util.*;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
+@Service
 public final class RestService implements WebMvcConfigurer {
 
     private static RestService restService;
-
-    private Client client;
-    private WebTarget webTarget;
 
     private RestTemplate restTemplate = new RestTemplate();
 
@@ -37,13 +29,13 @@ public final class RestService implements WebMvcConfigurer {
 
     public static RestService getInstance() {
 
-        if(restService == null) {
-            synchronized(RestService.class) {
+//        if(restService == null) {
+//            synchronized(RestService.class) {
                 if(restService == null) {
                     return new RestService();
                 }
-            }
-        }
+//            }
+//        }
         return restService;
     }
 
@@ -128,6 +120,24 @@ public final class RestService implements WebMvcConfigurer {
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<String> entity = new HttpEntity<>(jsonContent, headers);
         String answer = restTemplate.postForObject(uri, entity, String.class);
+
+        System.out.println(answer);
+    }
+
+    public void deleteTrackFromPlaylist(Playlist playlist, Set<PlaylistTrack> parentTrack) {
+        Gson gson = new Gson();
+        List<PlaylistTrack> playlistTracks = new ArrayList<>(parentTrack);
+
+        Playlist playlistWithDeleteTrack = new Playlist(playlist.getName(), playlist.getPlaylistStringId(), playlistTracks);
+
+        String jsonContent = gson.toJson(playlistWithDeleteTrack);
+        URI uri = UriComponentsBuilder.fromHttpUrl("http://localhost:8080/v1/gpsy/playlists/deleteTrack")
+                .build().encode().toUri();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<String> entity = new HttpEntity<>(jsonContent, headers);
+        ResponseEntity answer = restTemplate.exchange(uri, HttpMethod.DELETE, entity, String.class);
 
         System.out.println(answer);
     }

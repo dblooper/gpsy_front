@@ -14,12 +14,9 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 public class PlaylistForm extends FormLayout {
 
     private VerticalLayout verticalLayout = new VerticalLayout();
-    HorizontalLayout horizontalLayout = new HorizontalLayout();
     private Grid<Playlist> userPlaylistsGrid = new Grid<>(Playlist.class);
     private Text textField = new Text("No track choosen");
     private Label gridLabel = new Label("Playlists");
-    private Button acceptButton = new Button("Save");
-    private ComboBox<String> playlistTracks = new ComboBox<>("Playlist");
     private RestService restService = RestService.getInstance();
     private PlaylistTrackForm playlistTrackForm = new PlaylistTrackForm(this);
 
@@ -46,5 +43,13 @@ public class PlaylistForm extends FormLayout {
 
         userPlaylistsGrid.asSingleSelect().addValueChangeListener(event -> playlistTrackForm.setPlaylist(userPlaylistsGrid.asSingleSelect().getValue()));
         add(theMainContent);
+    }
+
+    public Playlist getCurrentPlaylist() {
+        return userPlaylistsGrid.asSingleSelect().getValue();
+    }
+
+    public void refresh() {
+        userPlaylistsGrid.setItems(restService.getPlaylistsFromApi());
     }
 }
