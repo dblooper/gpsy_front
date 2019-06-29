@@ -89,12 +89,4 @@ public class RestService implements WebMvcConfigurer {
     }
 
 
-//    public List<RecentTrack> getRecentTracks() {
-//        List<RecentTrack> fetchedTracks = new ArrayList<>();
-//        for(int i = 0; i < 10; i++) {
-//            fetchedTracks.add(new RecentTrack("id" + i, "title" + i, "author" + i, "date"));
-//        }
-//
-//        return fetchedTracks;
-//    }
 }

@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 @AllArgsConstructor
 @Getter
 @Setter
-public class PopularTrack {
+public class PopularTrack implements ParentTrack {
 
     private String trackId;
 

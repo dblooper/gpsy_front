@@ -12,18 +12,14 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.data.binder.Binder;
 
 
-public class RecentTracksForm extends FormLayout {
+public class RecentTracksForm extends FormLayout implements ParentForm {
 
-    VerticalLayout verticalLayout = new VerticalLayout();
-    private Grid<RecentTrack> recentTracksGrid = new Grid<>(RecentTrack.class);
-    private Text textField = new Text("No track choosen");
-    private Label gridLabel = new Label("Recently played");
-    private Button acceptButton = new Button("Save");
-    private ComboBox<String> playlistSelect = new ComboBox<>("Playlist");
     private RestService restService = new RestService();
-    private Binder<RecentTrack> binder = new Binder<>(RecentTrack.class);
-    private Text textSave = new Text("Nothing saved");
-
+    private VerticalLayout verticalLayout = new VerticalLayout();
+    private PlaylistChoseForm playlistChoseForm = new PlaylistChoseForm(this);
+    private Grid<RecentTrack> recentTracksGrid = new Grid<>(RecentTrack.class);
+    private Text textField = new Text("No track chosen");
+    private Label gridLabel = new Label("Recently played");
 
         public RecentTracksForm() {
             gridLabel.setClassName("grid-title");
@@ -32,21 +28,13 @@ public class RecentTracksForm extends FormLayout {
             recentTracksGrid.setSelectionMode(Grid.SelectionMode.MULTI);
 
             recentTracksGrid.asMultiSelect().addValueChangeListener(event -> {
-                String message = String.format("Selection changed from %s to %s",
-                        event.getOldValue(), event.getValue());
-                textField.setText(message);
+                textField.setText(("Total selected: " + recentTracksGrid.getSelectedItems().size()));
+                setVisiblePlaylistForm();
             });
             recentTracksGrid.setItems(restService.getRecentTracksFromApi());
+            playlistChoseForm.setVisible(false);
+            verticalLayout.add(gridLabel, recentTracksGrid, textField, playlistChoseForm);
 
-//            playlistSelect.setRequiredIndicatorVisible(true);
-            playlistSelect.setLabel("Playlist");
-            playlistSelect.setPlaceholder("Choose the playlist");
-//            playlistSelect.setRequired(true);
-            playlistSelect.setItems("Weekly", "Mothly");
-
-            acceptButton.addClickListener(event -> save());
-
-            verticalLayout.add(gridLabel, recentTracksGrid, textField, playlistSelect, acceptButton, textSave);
             verticalLayout.addClassName("forms-style");
             verticalLayout.setMinWidth("100%");
             add(verticalLayout);
@@ -54,18 +42,26 @@ public class RecentTracksForm extends FormLayout {
 
         }
 
-        private void save() {
-            StringBuilder stringBuilder = new StringBuilder("Saved: ");
-            String outputText;
-
-            if(recentTracksGrid.asMultiSelect().getSelectedItems().isEmpty()) {
-                outputText = "Nothing saved, no selected items";
-            }else {
-                recentTracksGrid.asMultiSelect().getSelectedItems().stream()
-                        .forEach(item -> stringBuilder.append("[ ").append(item.getTitle()).append(" ] "));
-                outputText = stringBuilder.toString();
+        private void setVisiblePlaylistForm() {
+            if(recentTracksGrid.asMultiSelect().getSelectedItems().size() == 0) {
+                playlistChoseForm.setVisible(false);
+            } else {
+                playlistChoseForm.setVisible(true);
             }
-            textSave.setText(outputText);
         }
+
+    @Override
+    public Grid<?> getGrid() {
+        return this.recentTracksGrid;
+    }
+
+    @Override
+    public void saveAllToSpotify() {
+    }
+
+    @Override
+    public Text getInformationText() {
+        return this.textField;
+    }
 
 }

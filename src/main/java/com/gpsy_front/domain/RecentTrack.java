@@ -16,7 +16,7 @@ import java.util.*;
 @Getter
 @Setter
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class RecentTrack {
+public class RecentTrack implements ParentTrack {
 
     private String trackId;
 
