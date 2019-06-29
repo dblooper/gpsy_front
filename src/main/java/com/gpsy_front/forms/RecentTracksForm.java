@@ -1,21 +1,15 @@
 package com.gpsy_front.forms;
 
 import com.gpsy_front.domain.RecentTrack;
-import com.gpsy_front.service.RESTService;
+import com.gpsy_front.service.RestService;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Label;
-import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.component.select.Select;
 import com.vaadin.flow.data.binder.Binder;
-
-import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 
 public class RecentTracksForm extends FormLayout {
@@ -26,7 +20,7 @@ public class RecentTracksForm extends FormLayout {
     private Label gridLabel = new Label("Recently played");
     private Button acceptButton = new Button("Save");
     private ComboBox<String> playlistSelect = new ComboBox<>("Playlist");
-    private RESTService restService = new RESTService();
+    private RestService restService = new RestService();
     private Binder<RecentTrack> binder = new Binder<>(RecentTrack.class);
     private Text textSave = new Text("Nothing saved");
 

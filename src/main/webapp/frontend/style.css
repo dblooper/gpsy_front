@@ -49,3 +49,7 @@
 vaadin-grid-cell-content {
     font-size: 14px;
 }
+
+.horizontalLayoutAlignment {
+    align-items: center;
+}

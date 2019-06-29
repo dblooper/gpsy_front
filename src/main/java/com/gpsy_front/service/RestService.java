@@ -3,6 +3,8 @@ package com.gpsy_front.service;
 import com.gpsy_front.domain.Playlist;
 import com.gpsy_front.domain.PopularTrack;
 import com.gpsy_front.domain.RecentTrack;
+import com.gpsy_front.domain.RecommendedTrack;
+import com.vaadin.flow.component.html.Anchor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
@@ -21,7 +23,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-public class RESTService implements WebMvcConfigurer {
+public class RestService implements WebMvcConfigurer {
 
     private Client client;
     private WebTarget webTarget;
@@ -63,6 +65,23 @@ public class RESTService implements WebMvcConfigurer {
             List<Playlist> retrievedPlaylists = Optional.ofNullable(playlists).map(Arrays::asList).orElse(new ArrayList<>());
             retrievedPlaylists.stream().forEach(Playlist::countTracks);
             return retrievedPlaylists;
+        }catch(RestClientException e) {
+            System.out.println(e.getMessage());
+            return new ArrayList<>();
+        }
+    }
+
+    public List<RecommendedTrack> getRecommendedTrcksFromApi() {
+        URI uri = UriComponentsBuilder.fromHttpUrl("http://localhost:8080/v1/gpsy/tracks/recommended").build().encode().toUri();
+
+        try {
+            RecommendedTrack[] recommendedTracks = restTemplate.getForObject(uri, RecommendedTrack[].class);
+            List<RecommendedTrack> recommendedTrackList = Optional.ofNullable(recommendedTracks).map(Arrays::asList).orElse(new ArrayList<>());
+//            recommendedTrackList.stream()
+//                    .forEach(track -> track.setLink(new Anchor(track.getSample(),"Click")));
+            return recommendedTrackList;
+
+
         }catch(RestClientException e) {
             System.out.println(e.getMessage());
             return new ArrayList<>();

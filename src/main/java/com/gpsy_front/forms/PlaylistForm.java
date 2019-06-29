@@ -1,7 +1,7 @@
 package com.gpsy_front.forms;
 
 import com.gpsy_front.domain.Playlist;
-import com.gpsy_front.service.RESTService;
+import com.gpsy_front.service.RestService;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -20,7 +20,7 @@ public class PlaylistForm extends FormLayout {
     private Label gridLabel = new Label("Playlists");
     private Button acceptButton = new Button("Save");
     private ComboBox<String> playlistTracks = new ComboBox<>("Playlist");
-    private RESTService restService = new RESTService();
+    private RestService restService = new RestService();
     private PlaylistTrackForm playlistTrackForm = new PlaylistTrackForm(this);
 
     public PlaylistForm() {
