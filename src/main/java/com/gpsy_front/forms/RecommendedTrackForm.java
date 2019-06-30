@@ -8,14 +8,12 @@ import com.gpsy_front.domain.RecommendedTrack;
 import com.gpsy_front.service.RestService;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -44,7 +42,7 @@ public class RecommendedTrackForm extends FormLayout implements ParentForm{
                         anchor.setTarget("tab");
                         return anchor;
                     } else {
-                        Anchor anchor = new Anchor("https://www.youtube.com", "Search on YT");
+                        Anchor anchor = new Anchor("https://www.youtube.com/results?search_query=" + track.getTitle()+ " " + track.getAuthors(), "Search on YT");
                         anchor.setTarget("tab");
                         return anchor;
                     }
