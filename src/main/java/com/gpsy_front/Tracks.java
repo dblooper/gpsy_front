@@ -1,10 +1,9 @@
 package com.gpsy_front;
 
 import com.gpsy_front.domain.Playlist;
-import com.gpsy_front.domain.RecommendedTrack;
-import com.gpsy_front.forms.MostPopularTrackForm;
-import com.gpsy_front.forms.RecentTracksForm;
-import com.gpsy_front.forms.RecommendedTrackForm;
+import com.gpsy_front.forms.tracks.MostPopularTrackForm;
+import com.gpsy_front.forms.tracks.RecentTracksForm;
+import com.gpsy_front.forms.tracks.RecommendedTrackForm;
 import com.gpsy_front.service.RestService;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.orderedlayout.FlexComponent;
@@ -20,6 +19,7 @@ public class Tracks extends Div {
     private VerticalLayout verticalLayout = new VerticalLayout();
     private HorizontalLayout horizontalLayout = new HorizontalLayout();
     private HorizontalLayout horizontalLayoutDown = new HorizontalLayout();
+
     private RecentTracksForm recentTracksForm;
     private MostPopularTrackForm mostPopularTrackForm;
     private RecommendedTrackForm recommendedTrackForm;
@@ -30,15 +30,20 @@ public class Tracks extends Div {
         this.recentTracksForm = new RecentTracksForm(playlists);
         this.mostPopularTrackForm = new MostPopularTrackForm(playlists);
         this.recommendedTrackForm = new RecommendedTrackForm(playlists);
+
+//        recommendedTrackForm.setPadding(false);
+//        recommendedTrackForm.setMargin(false);
+//
+//        mostPopularTrackForm.setMargin(false);
+//        mostPopularTrackForm.setPadding(false);
+
         horizontalLayout.add(recentTracksForm, mostPopularTrackForm);
         horizontalLayout.setSizeFull();
         horizontalLayoutDown.add(recommendedTrackForm);
-        recommendedTrackForm.setWidth("50%");
+//        recommendedTrackForm.setWidth("50%");
         horizontalLayoutDown.setSizeFull();
-//        horizontalLayoutDown.addClassName("horizontalLayoutAlignment");
-        horizontalLayoutDown.setAlignItems(FlexComponent.Alignment.CENTER);
         verticalLayout.add(horizontalLayout, horizontalLayoutDown);
+        verticalLayout.setPadding(false);
         add(verticalLayout);
-        setSizeFull();
     }
 }

@@ -1,6 +1,7 @@
 package com.gpsy_front.service;
 
 import com.google.gson.Gson;
+import com.gpsy_front.Lyrics;
 import com.gpsy_front.Tracks;
 import com.gpsy_front.domain.*;
 import com.vaadin.flow.component.html.Anchor;
@@ -20,6 +21,8 @@ import java.util.stream.Collectors;
 
 @Service
 public final class RestService implements WebMvcConfigurer {
+
+    public static final String GPSY_API_ROOT = "http://localhost:8080/v1/gpsy";
 
     private static RestService restService;
 
@@ -41,7 +44,7 @@ public final class RestService implements WebMvcConfigurer {
 
     public List<RecentTrack> getRecentTracksFromApi() {
 
-        URI uri = UriComponentsBuilder.fromHttpUrl("http://localhost:8080/v1/gpsy/tracks/recent").build().encode().toUri();
+        URI uri = UriComponentsBuilder.fromHttpUrl(GPSY_API_ROOT + "/tracks/recent").build().encode().toUri();
 
         try {
             RecentTrack[] recentTracks = restTemplate.getForObject(uri, RecentTrack[].class);
@@ -53,7 +56,7 @@ public final class RestService implements WebMvcConfigurer {
     }
 
     public List<PopularTrack> getPopularTracksFromApi() {
-        URI uri = UriComponentsBuilder.fromHttpUrl("http://localhost:8080/v1/gpsy/tracks/popular").build().encode().toUri();
+        URI uri = UriComponentsBuilder.fromHttpUrl(GPSY_API_ROOT + "/tracks/popular").build().encode().toUri();
 
         try {
             PopularTrack[] popularTracks = restTemplate.getForObject(uri, PopularTrack[].class);
@@ -66,7 +69,7 @@ public final class RestService implements WebMvcConfigurer {
 
 
     public List<Playlist> getPlaylistsFromApi() {
-        URI uri = UriComponentsBuilder.fromHttpUrl("http://localhost:8080/v1/gpsy/playlists/current").build().encode().toUri();
+        URI uri = UriComponentsBuilder.fromHttpUrl(GPSY_API_ROOT + "/playlists/current").build().encode().toUri();
 
         try {
             Playlist[] playlists = restTemplate.getForObject(uri, Playlist[].class);
@@ -80,7 +83,7 @@ public final class RestService implements WebMvcConfigurer {
     }
 
     public List<RecommendedTrack> getRecommendedTrcksFromApi() {
-        URI uri = UriComponentsBuilder.fromHttpUrl("http://localhost:8080/v1/gpsy/tracks/recommended").build().encode().toUri();
+        URI uri = UriComponentsBuilder.fromHttpUrl(GPSY_API_ROOT + "/tracks/recommended").build().encode().toUri();
 
         try {
             RecommendedTrack[] recommendedTracks = restTemplate.getForObject(uri, RecommendedTrack[].class);
@@ -88,7 +91,6 @@ public final class RestService implements WebMvcConfigurer {
 //            recommendedTrackList.stream()
 //                    .forEach(track -> track.setLink(new Anchor(track.getSample(),"Click")));
             return recommendedTrackList;
-
 
         }catch(RestClientException e) {
             System.out.println(e.getMessage());
@@ -113,7 +115,7 @@ public final class RestService implements WebMvcConfigurer {
         Playlist playlistUpdated = new Playlist(playlist.getName(), playlist.getPlaylistStringId(), popularTracksTooUpdate);
 
         String jsonContent = gson.toJson(playlistUpdated);
-        URI uri = UriComponentsBuilder.fromHttpUrl("http://localhost:8080/v1/gpsy/playlists/addToPlaylist")
+        URI uri = UriComponentsBuilder.fromHttpUrl(GPSY_API_ROOT + "/playlists/addToPlaylist")
                 .build().encode().toUri();
 
         HttpHeaders headers = new HttpHeaders();
@@ -131,7 +133,7 @@ public final class RestService implements WebMvcConfigurer {
         Playlist playlistWithDeleteTrack = new Playlist(playlist.getName(), playlist.getPlaylistStringId(), playlistTracks);
 
         String jsonContent = gson.toJson(playlistWithDeleteTrack);
-        URI uri = UriComponentsBuilder.fromHttpUrl("http://localhost:8080/v1/gpsy/playlists/deleteTrack")
+        URI uri = UriComponentsBuilder.fromHttpUrl(GPSY_API_ROOT + "/playlists/deleteTrack")
                 .build().encode().toUri();
 
         HttpHeaders headers = new HttpHeaders();
@@ -140,5 +142,36 @@ public final class RestService implements WebMvcConfigurer {
         ResponseEntity answer = restTemplate.exchange(uri, HttpMethod.DELETE, entity, String.class);
 
         System.out.println(answer);
+    }
+
+    public RecommendedPlaylist fetchRecommendedPlaylist(int quantityOfTracksForPlaylist) {
+
+        URI uri = UriComponentsBuilder.fromHttpUrl(GPSY_API_ROOT + "/playlists/recommended")
+                .queryParam("qty", quantityOfTracksForPlaylist)
+                .build().encode().toUri();
+        System.out.println(uri.toString());
+        try {
+            return  Optional.ofNullable(restTemplate.getForObject(uri, RecommendedPlaylist.class)).orElse(new RecommendedPlaylist());
+        }catch(RestClientException e) {
+            System.out.println(e.getMessage());
+            return new RecommendedPlaylist();
+        }
+
+    }
+
+    public LyricsDto fetchLyrics(String title, String author) {
+
+        URI uri = UriComponentsBuilder.fromHttpUrl(GPSY_API_ROOT + "/audd/getLyrics/")
+                .queryParam("title", title)
+                .queryParam("author", author)
+                .build().encode().toUri();
+        System.out.println(uri.toString());
+        try {
+            return  Optional.ofNullable(restTemplate.getForObject(uri, LyricsDto.class)).orElse(new LyricsDto("n/a", "/na","n/a"));
+        }catch(RestClientException e) {
+            System.out.println(e.getMessage());
+            return new LyricsDto("n/a", "/na","n/a");
+        }
+
     }
 }

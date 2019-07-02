@@ -1,24 +1,23 @@
-package com.gpsy_front.forms;
+package com.gpsy_front.forms.tracks;
 
 import com.gpsy_front.domain.ParentTrack;
 import com.gpsy_front.domain.Playlist;
 import com.gpsy_front.domain.RecentTrack;
+import com.gpsy_front.forms.ParentForm;
+import com.gpsy_front.forms.playlist.PlaylistChoseForm;
 import com.gpsy_front.service.RestService;
 import com.vaadin.flow.component.Text;
-import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
-import com.vaadin.flow.data.binder.Binder;
 
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
 
-public class RecentTracksForm extends FormLayout implements ParentForm {
+public class RecentTracksForm extends VerticalLayout implements ParentForm {
 
     private RestService restService = RestService.getInstance();
     private VerticalLayout verticalLayout = new VerticalLayout();
@@ -43,7 +42,7 @@ public class RecentTracksForm extends FormLayout implements ParentForm {
             verticalLayout.add(gridLabel, recentTracksGrid, textField, playlistChoseForm);
 
             verticalLayout.addClassName("forms-style");
-            verticalLayout.setMinWidth("100%");
+            verticalLayout.setSizeFull();
             add(verticalLayout);
             setSizeFull();
 

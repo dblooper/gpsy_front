@@ -1,35 +1,27 @@
-package com.gpsy_front.forms;
+package com.gpsy_front.forms.playlist;
 
 import com.gpsy_front.domain.Playlist;
 import com.gpsy_front.service.RestService;
 import com.vaadin.flow.component.Text;
-import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
-public class PlaylistForm extends FormLayout {
+public class PlaylistForm extends VerticalLayout {
 
     private VerticalLayout verticalLayout = new VerticalLayout();
     private Grid<Playlist> userPlaylistsGrid = new Grid<>(Playlist.class);
     private Text textField = new Text("No track choosen");
-    private Label gridLabel = new Label("Playlists");
+    private Label gridLabel = new Label("Your current playlists");
     private RestService restService = RestService.getInstance();
     private PlaylistTrackForm playlistTrackForm = new PlaylistTrackForm(this);
 
     public PlaylistForm() {
-        gridLabel.setId("grid-title");
+        gridLabel.setClassName("grid-title");
         userPlaylistsGrid.setColumns("name", "quantityOfTracks");
         userPlaylistsGrid.setSelectionMode(Grid.SelectionMode.SINGLE);
-
-//        userPlaylistsGrid.asMultiSelect().addValueChangeListener(event -> {
-//            String message = String.format("Selection changed from %s to %s",
-//                    event.getOldValue(), event.getValue());
-//            textField.setText(message);
-//        });
 
         verticalLayout.add(gridLabel, userPlaylistsGrid, textField);
         verticalLayout.addClassName("forms-style");
@@ -43,6 +35,7 @@ public class PlaylistForm extends FormLayout {
 
         userPlaylistsGrid.asSingleSelect().addValueChangeListener(event -> playlistTrackForm.setPlaylist(userPlaylistsGrid.asSingleSelect().getValue()));
         add(theMainContent);
+        setSizeFull();
     }
 
     public Playlist getCurrentPlaylist() {
