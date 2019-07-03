@@ -1,14 +1,9 @@
 package com.gpsy_front.service;
 
 import com.google.gson.Gson;
-import com.gpsy_front.Lyrics;
-import com.gpsy_front.Tracks;
+
 import com.gpsy_front.domain.*;
-import com.vaadin.flow.component.html.Anchor;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.*;
-import org.springframework.stereotype.Component;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
@@ -32,14 +27,25 @@ public final class RestService implements WebMvcConfigurer {
 
     public static RestService getInstance() {
 
-//        if(restService == null) {
-//            synchronized(RestService.class) {
                 if(restService == null) {
                     return new RestService();
                 }
-//            }
-//        }
+
         return restService;
+    }
+
+    public List<PopularTrack> getPopularTracks() {
+
+        URI uri = UriComponentsBuilder.fromHttpUrl(GPSY_API_ROOT + "/tracks/spotify/popular").build().encode().toUri();
+
+        try {
+            PopularTrack[] mostFrequentTracks = restTemplate.getForObject(uri, PopularTrack[].class);
+            System.out.println(mostFrequentTracks[0]);
+            return Optional.ofNullable(mostFrequentTracks).map(Arrays::asList).orElse(new ArrayList<>());
+        }catch(RestClientException e) {
+            System.out.println(e.getMessage());
+            return new ArrayList<>();
+        }
     }
 
     public List<RecentTrack> getRecentTracksFromApi() {
@@ -55,12 +61,12 @@ public final class RestService implements WebMvcConfigurer {
         }
     }
 
-    public List<PopularTrack> getPopularTracksFromApi() {
-        URI uri = UriComponentsBuilder.fromHttpUrl(GPSY_API_ROOT + "/tracks/popular").build().encode().toUri();
+    public List<MostFrequentTrack> getFrequentTracksFromApi() {
+        URI uri = UriComponentsBuilder.fromHttpUrl(GPSY_API_ROOT + "/tracks/frequent").build().encode().toUri();
 
         try {
-            PopularTrack[] popularTracks = restTemplate.getForObject(uri, PopularTrack[].class);
-            return Optional.ofNullable(popularTracks).map(Arrays::asList).orElse(new ArrayList<>());
+            MostFrequentTrack[] frequentTracks = restTemplate.getForObject(uri, MostFrequentTrack[].class);
+            return Optional.ofNullable(frequentTracks).map(Arrays::asList).orElse(new ArrayList<>());
         }catch(RestClientException e) {
             System.out.println(e.getMessage());
             return new ArrayList<>();
@@ -144,9 +150,38 @@ public final class RestService implements WebMvcConfigurer {
         System.out.println(answer);
     }
 
-    public RecommendedPlaylist fetchRecommendedPlaylist(int quantityOfTracksForPlaylist) {
+    public void updatePlaylistDetails(Playlist playlist) {
+        Gson gson = new Gson();
+
+        String jsonContent = gson.toJson(playlist);
+
+        URI uri = UriComponentsBuilder.fromHttpUrl(GPSY_API_ROOT + "/playlists/updateDetails")
+                .build().encode().toUri();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<String> entity = new HttpEntity<>(jsonContent, headers);
+        ResponseEntity answer = restTemplate.exchange(uri, HttpMethod.POST, entity, String.class);
+
+        System.out.println(answer);
+    }
+
+    public RecommendedPlaylist getRecommendedPlaylist() {
 
         URI uri = UriComponentsBuilder.fromHttpUrl(GPSY_API_ROOT + "/playlists/recommended")
+                .build().encode().toUri();
+        System.out.println(uri.toString());
+        try {
+            return  Optional.ofNullable(restTemplate.getForObject(uri, RecommendedPlaylist.class)).orElse(new RecommendedPlaylist());
+        }catch(RestClientException e) {
+            System.out.println(e.getMessage());
+            return new RecommendedPlaylist();
+        }
+    }
+
+    public RecommendedPlaylist updateFetchRecommendedPlaylist(int quantityOfTracksForPlaylist) {
+
+        URI uri = UriComponentsBuilder.fromHttpUrl(GPSY_API_ROOT + "/playlists/recommended/new")
                 .queryParam("qty", quantityOfTracksForPlaylist)
                 .build().encode().toUri();
         System.out.println(uri.toString());
@@ -156,7 +191,20 @@ public final class RestService implements WebMvcConfigurer {
             System.out.println(e.getMessage());
             return new RecommendedPlaylist();
         }
+    }
 
+    public RecommendedPlaylist changeQuantityOfRecommendedTracks(int quantityOfTracksForPlaylist) {
+
+        URI uri = UriComponentsBuilder.fromHttpUrl(GPSY_API_ROOT + "/playlists/recommended/change")
+                .queryParam("qty", quantityOfTracksForPlaylist)
+                .build().encode().toUri();
+        System.out.println(uri.toString());
+        try {
+            return  Optional.ofNullable(restTemplate.getForObject(uri, RecommendedPlaylist.class)).orElse(new RecommendedPlaylist());
+        }catch(RestClientException e) {
+            System.out.println(e.getMessage());
+            return new RecommendedPlaylist();
+        }
     }
 
     public LyricsDto fetchLyrics(String title, String author) {

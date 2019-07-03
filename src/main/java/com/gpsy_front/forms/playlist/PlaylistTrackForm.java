@@ -39,6 +39,11 @@ public class PlaylistTrackForm extends VerticalLayout {
             playlistTrackGrid.setItems(tracks);
             playlistForm.refresh();
         });
+        updateNameButton.addClickListener(event -> {
+            updatePlaylist();
+            playlistForm.refresh();
+        });
+
         mainContent.add(updateNameArea, playlistTrackGrid, deleteButton);
         add(mainContent);
         mainContent.addClassName("forms-style");
@@ -63,6 +68,11 @@ public class PlaylistTrackForm extends VerticalLayout {
             setTracks(playlist.getTracks());
             setVisible(true);
         }
+    }
+
+    void updatePlaylist() {
+        Playlist playlist = playlistForm.getCurrentPlaylist();
+        restService.updatePlaylistDetails(new Playlist(name.getValue(), playlist.getPlaylistStringId(), playlist.getTracks()));
     }
 
     public void deleteTrack() {

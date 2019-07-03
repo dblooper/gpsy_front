@@ -1,12 +1,12 @@
 package com.gpsy_front;
 
 import com.gpsy_front.domain.Playlist;
-import com.gpsy_front.forms.tracks.MostPopularTrackForm;
-import com.gpsy_front.forms.tracks.RecentTracksForm;
+import com.gpsy_front.forms.tracks.MostFrequentTrackForm;
+import com.gpsy_front.forms.tracks.PopularTrackForm;
+import com.gpsy_front.forms.tracks.RecentTrackForm;
 import com.gpsy_front.forms.tracks.RecommendedTrackForm;
 import com.gpsy_front.service.RestService;
 import com.vaadin.flow.component.html.Div;
-import com.vaadin.flow.component.orderedlayout.FlexComponent;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
@@ -20,26 +20,28 @@ public class Tracks extends Div {
     private HorizontalLayout horizontalLayout = new HorizontalLayout();
     private HorizontalLayout horizontalLayoutDown = new HorizontalLayout();
 
-    private RecentTracksForm recentTracksForm;
-    private MostPopularTrackForm mostPopularTrackForm;
+    private RecentTrackForm recentTrackForm;
+    private MostFrequentTrackForm mostFrequentTrackForm;
+    private PopularTrackForm popularTrackForm;
     private RecommendedTrackForm recommendedTrackForm;
     private RestService restService = RestService.getInstance();
 
     public Tracks() {
         List<Playlist> playlists = restService.getPlaylistsFromApi();
-        this.recentTracksForm = new RecentTracksForm(playlists);
-        this.mostPopularTrackForm = new MostPopularTrackForm(playlists);
+        this.recentTrackForm = new RecentTrackForm(playlists);
+        this.mostFrequentTrackForm = new MostFrequentTrackForm(playlists);
         this.recommendedTrackForm = new RecommendedTrackForm(playlists);
+        this.popularTrackForm = new PopularTrackForm(playlists);
 
 //        recommendedTrackForm.setPadding(false);
 //        recommendedTrackForm.setMargin(false);
 //
-//        mostPopularTrackForm.setMargin(false);
-//        mostPopularTrackForm.setPadding(false);
+//        mostFrequentTrackForm.setMargin(false);
+//        mostFrequentTrackForm.setPadding(false);
 
-        horizontalLayout.add(recentTracksForm, mostPopularTrackForm);
+        horizontalLayout.add(recentTrackForm, mostFrequentTrackForm);
         horizontalLayout.setSizeFull();
-        horizontalLayoutDown.add(recommendedTrackForm);
+        horizontalLayoutDown.add(recommendedTrackForm, popularTrackForm);
 //        recommendedTrackForm.setWidth("50%");
         horizontalLayoutDown.setSizeFull();
         verticalLayout.add(horizontalLayout, horizontalLayoutDown);

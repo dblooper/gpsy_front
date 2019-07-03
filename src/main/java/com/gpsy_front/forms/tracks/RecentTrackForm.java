@@ -17,7 +17,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 
-public class RecentTracksForm extends VerticalLayout implements ParentForm {
+public class RecentTrackForm extends VerticalLayout implements ParentForm {
 
     private RestService restService = RestService.getInstance();
     private VerticalLayout verticalLayout = new VerticalLayout();
@@ -26,7 +26,7 @@ public class RecentTracksForm extends VerticalLayout implements ParentForm {
     private Text textField = new Text("No track chosen");
     private Label gridLabel = new Label("Recently played");
 
-        public RecentTracksForm(List<Playlist> playlists) {
+        public RecentTrackForm(List<Playlist> playlists) {
             this.playlistChoseForm = new PlaylistChoseForm(this, playlists);
             gridLabel.setClassName("grid-title");
             gridLabel.setSizeFull();

@@ -1,5 +1,6 @@
 package com.gpsy_front.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,7 +12,8 @@ import org.springframework.stereotype.Component;
 @AllArgsConstructor
 @Getter
 @Setter
-public class PopularTrack implements ParentTrack {
+@JsonIgnoreProperties(ignoreUnknown = true)
+public class PopularTrack  implements ParentTrack {
 
     private String trackId;
 
@@ -20,4 +22,14 @@ public class PopularTrack implements ParentTrack {
     private String authors;
 
     private Integer popularity;
+
+    @Override
+    public String toString() {
+        return "PopularTrack{" +
+                "trackId='" + trackId + '\'' +
+                ", title='" + title + '\'' +
+                ", authors='" + authors + '\'' +
+                ", popularity=" + popularity +
+                '}';
+    }
 }

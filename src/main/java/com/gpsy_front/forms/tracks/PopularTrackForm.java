@@ -2,12 +2,12 @@ package com.gpsy_front.forms.tracks;
 
 import com.gpsy_front.domain.ParentTrack;
 import com.gpsy_front.domain.Playlist;
+import com.gpsy_front.domain.MostFrequentTrack;
 import com.gpsy_front.domain.PopularTrack;
 import com.gpsy_front.forms.ParentForm;
 import com.gpsy_front.forms.playlist.PlaylistChoseForm;
 import com.gpsy_front.service.RestService;
 import com.vaadin.flow.component.Text;
-import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -16,16 +16,16 @@ import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public class MostPopularTrackForm extends VerticalLayout implements ParentForm {
+public class PopularTrackForm extends VerticalLayout implements ParentForm {
 
     private RestService restService = RestService.getInstance();
-    VerticalLayout verticalLayout = new VerticalLayout();
+    private VerticalLayout verticalLayout = new VerticalLayout();
     private PlaylistChoseForm playlistChoseForm;
     private Grid<PopularTrack> recentTracksGrid = new Grid<>(PopularTrack.class);
     private Text textField = new Text("No track choosen");
-    private Label gridLabel = new Label("Most popular tracks");
+    private Label gridLabel = new Label("Most Popular Tracks acc. to Spotify");
 
-    public MostPopularTrackForm(List<Playlist> playlists) {
+    public PopularTrackForm(List<Playlist> playlists) {
 
         playlistChoseForm = new PlaylistChoseForm(this, playlists);
         gridLabel.setClassName("grid-title");
@@ -38,7 +38,7 @@ public class MostPopularTrackForm extends VerticalLayout implements ParentForm {
             textField.setText(("Total selected: " + recentTracksGrid.getSelectedItems().size()));
             setVisiblePlaylistForm();
         });
-        recentTracksGrid.setItems(restService.getPopularTracksFromApi());
+        recentTracksGrid.setItems(restService.getPopularTracks());
         playlistChoseForm.setVisible(false);
         verticalLayout.add(gridLabel, recentTracksGrid, textField, playlistChoseForm);
 
@@ -47,10 +47,6 @@ public class MostPopularTrackForm extends VerticalLayout implements ParentForm {
         add(verticalLayout);
         setSizeFull();
 
-    }
-
-    public int getGridSelectedItemsSize() {
-        return this.recentTracksGrid.getSelectedItems().size();
     }
 
     private void setVisiblePlaylistForm() {
@@ -79,3 +75,4 @@ public class MostPopularTrackForm extends VerticalLayout implements ParentForm {
         return this.textField;
     }
 }
+
