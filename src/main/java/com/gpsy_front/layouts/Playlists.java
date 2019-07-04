@@ -1,6 +1,5 @@
-package com.gpsy_front;
+package com.gpsy_front.layouts;
 
-import com.gpsy_front.domain.RecommendedPlaylist;
 import com.gpsy_front.forms.playlist.PlaylistForm;
 import com.gpsy_front.forms.playlist.PlaylistGeneratorOutput;
 import com.vaadin.flow.component.html.Div;

@@ -1,16 +1,27 @@
 
 .logo{
+    color: black;
     font-weight: bold;
-    font-size: 15px;
-    text-align: left;
+    font-size: 10px;
     border-right: 1px solid dimgray;
+    text-align: center;
+    margin: 0  20px;
+    padding-right: 10px;
 
 }
 
+.about{
+    color: black;
+    font-weight: bold;
+    font-size: 15px;
+}
+
 .main-navbar-layout {
-    background: lightgreen;
+    background: deepskyblue;
     border: 2px solid dimgray;
     border-radius: 5px;
+    padding: 5px 5px;
+    align-items: center;
 }
 
 .router-link {
@@ -40,11 +51,6 @@
     border-radius: 5px;
 }
 
-#forms-style {
-    width: 100%;
-    border: 2px solid dimgray;
-    border-radius: 5px;
-}
 
 vaadin-grid-cell-content {
     font-size: 14px;

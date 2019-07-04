@@ -13,7 +13,7 @@ public class PopularTracksWithLyrics extends FormLayout {
     private VerticalLayout verticalLayout = new VerticalLayout();
     private Grid<MostFrequentTrack> userPopularTrack = new Grid<>(MostFrequentTrack.class);
     private Text textField = new Text("No track choosen");
-    private Label gridLabel = new Label("Most popular songs");
+    private Label gridLabel = new Label("Most frequent songs");
     private RestService restService = RestService.getInstance();
     private LyricsWindow lyricsWindow = new LyricsWindow(this);
 

@@ -4,6 +4,7 @@ import com.gpsy_front.domain.Playlist;
 import com.gpsy_front.domain.PlaylistTrack;
 import com.gpsy_front.service.RestService;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -50,7 +51,10 @@ public class PlaylistTrackForm extends VerticalLayout {
         mainContent.setMargin(false);
         playlistBinder.bindInstanceFields(this);
 
+        updateNameButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        deleteButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         setSizeFull();
+        setPadding(false);
     }
 
     public void setTracks(List<PlaylistTrack> playlistTracks) {
@@ -73,9 +77,11 @@ public class PlaylistTrackForm extends VerticalLayout {
     void updatePlaylist() {
         Playlist playlist = playlistForm.getCurrentPlaylist();
         restService.updatePlaylistDetails(new Playlist(name.getValue(), playlist.getPlaylistStringId(), playlist.getTracks()));
+        playlistForm.updateInformation(playlist.getName() + " has been updated!");
     }
 
     public void deleteTrack() {
         restService.deleteTrackFromPlaylist(playlistForm.getCurrentPlaylist(), playlistTrackGrid.asMultiSelect().getSelectedItems());
+        playlistForm.updateInformation("Deleted: " + playlistTrackGrid.asMultiSelect().getSelectedItems().toString());
     }
 }

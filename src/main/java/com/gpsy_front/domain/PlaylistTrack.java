@@ -34,4 +34,12 @@ public class PlaylistTrack {
         this.title = title;
         this.authors = authors;
     }
+
+    @Override
+    public String toString() {
+        return "Track{" +
+                "title='" + title + '\'' +
+                ", authors='" + authors + '\'' +
+                '}';
+    }
 }

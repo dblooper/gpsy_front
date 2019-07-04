@@ -8,10 +8,11 @@ import com.gpsy_front.forms.playlist.PlaylistChoseForm;
 import com.gpsy_front.service.RestService;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.formlayout.FormLayout;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
 import java.util.List;
@@ -23,15 +24,20 @@ public class RecommendedTrackForm extends VerticalLayout implements ParentForm {
     private RestService restService = RestService.getInstance();
     private PlaylistChoseForm playlistChoseForm;
     private VerticalLayout verticalLayout = new VerticalLayout();
+    private HorizontalLayout horizontalLayout = new HorizontalLayout();
     private Grid<RecommendedTrack> recentTracksGrid = new Grid<>(RecommendedTrack.class);
     private Text textField = new Text("No track chosen");
     private Label gridLabel = new Label("Recommended Tracks");
-    private Button button = new Button("Refresh");
+    private Button refreshButton = new Button("Refresh");
 
     public RecommendedTrackForm(List<Playlist> playlists) {
         this.playlistChoseForm = new PlaylistChoseForm(this, playlists);
         gridLabel.setClassName("grid-title");
         gridLabel.setSizeFull();
+
+        horizontalLayout.add(gridLabel, refreshButton);
+        horizontalLayout.setAlignItems(Alignment.CENTER);
+        horizontalLayout.setSizeFull();
         recentTracksGrid.setColumns("title", "authors");
         recentTracksGrid.addComponentColumn(track -> {
                     if(track.getSample() != null) {
@@ -52,11 +58,12 @@ public class RecommendedTrackForm extends VerticalLayout implements ParentForm {
         });
         recentTracksGrid.setItems(restService.getRecommendedTrcksFromApi());
 
-        button.addClickListener(event ->
+        refreshButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        refreshButton.addClickListener(event ->
             recentTracksGrid.setItems(restService.getRecommendedTrcksFromApi()));
 
         playlistChoseForm.setVisible(false);
-        verticalLayout.add(gridLabel, recentTracksGrid, textField, button, playlistChoseForm);
+        verticalLayout.add(horizontalLayout, recentTracksGrid, textField, playlistChoseForm);
         verticalLayout.addClassName("forms-style");
         verticalLayout.setSizeFull();
         add(verticalLayout);

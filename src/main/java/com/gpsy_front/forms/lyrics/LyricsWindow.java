@@ -11,9 +11,7 @@ public class LyricsWindow extends VerticalLayout {
     private VerticalLayout mainContent = new VerticalLayout();
     private MostFrequentTrack track;
     private PopularTracksWithLyrics popularTracksWithLyrics;
-//    private Binder<PopularTrack> popularTrackBinder = new Binder<>(PopularTrack.class);
-
-    TextArea textArea;
+    private TextArea textArea;
 
     public LyricsWindow(PopularTracksWithLyrics popularTracksWithLyrics) {
         this.popularTracksWithLyrics = popularTracksWithLyrics;
@@ -30,7 +28,6 @@ public class LyricsWindow extends VerticalLayout {
     }
 
     public void setTrack(MostFrequentTrack mostFrequentTrack) {
-
 
         if(mostFrequentTrack != null) {
             this.track = mostFrequentTrack;

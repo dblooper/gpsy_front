@@ -4,26 +4,30 @@ import com.gpsy_front.domain.RecommendedPlaylist;
 import com.gpsy_front.domain.RecommendedTrack;
 import com.gpsy_front.service.RestService;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.NumberField;
+import com.vaadin.flow.data.binder.Binder;
 
 public class PlaylistGeneratorOutput extends VerticalLayout {
 
     private VerticalLayout verticalLayout = new VerticalLayout();
+    private HorizontalLayout horizontalLayout = new HorizontalLayout();
     private Grid<RecommendedTrack> playlistTrackGrid = new Grid<>(RecommendedTrack.class);
-    private Button button = new Button("Accept and Proceed");
-    private Button newPlaylistButton = new Button("Generate new set");
-    NumberField numberField = new NumberField("Tracks q-ty");
+    private Button updateButton = new Button("Reduce tracks");
+    private Button newPlaylistTracksButton = new Button("Generate new set");
+    NumberField numberField = new NumberField("Tracks quantity");
     private Label gridLabel = new Label("");
     private RestService restService = RestService.getInstance();
+    private Binder<NumberField> validationBinder = new Binder();
 
     public PlaylistGeneratorOutput() {
 
         gridLabel.setClassName("grid-title");
-        gridLabel.setSizeFull();
 
         playlistTrackGrid.setColumns("title", "authors");
         playlistTrackGrid.addComponentColumn(track -> {
@@ -38,21 +42,27 @@ public class PlaylistGeneratorOutput extends VerticalLayout {
             }
         }).setHeader("Try it out");
 
-
-        numberField.setMin(1);
-        numberField.setMax(50);
-        numberField.setHasControls(true);
-
-        verticalLayout.add(gridLabel, playlistTrackGrid, numberField, button, newPlaylistButton);
+        horizontalLayout.add(numberField, updateButton);
+        horizontalLayout.setAlignItems(Alignment.END);
+        verticalLayout.add(gridLabel, playlistTrackGrid, horizontalLayout, newPlaylistTracksButton);
         verticalLayout.addClassName("forms-style");
 
         RecommendedPlaylist recommendedPlaylist = restService.getRecommendedPlaylist();
         gridLabel.setText("Forecast for: " + recommendedPlaylist.getName() + " | Total: " + recommendedPlaylist.getNumberOfTracks());
         playlistTrackGrid.setItems(recommendedPlaylist.getPlaylistTracks());
-        numberField.setValue(recommendedPlaylist.getNumberOfTracks().doubleValue());
 
-        button.addClickListener(event -> updateAndRefresh(numberField.getValue().intValue()));
-        newPlaylistButton.addClickListener(event -> generateNewSetOfTracks(numberField.getValue().intValue()));
+        numberField.setMin(1);
+        numberField.setMax(50);
+        numberField.setHasControls(true);
+        numberField.setValue(recommendedPlaylist.getNumberOfTracks().doubleValue());
+        numberField.addValueChangeListener(event -> setVisibleButton());
+
+        updateButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        newPlaylistTracksButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        updateButton.setVisible(false);
+
+        updateButton.addClickListener(event -> updateAndRefresh(numberField.getValue().intValue()));
+        newPlaylistTracksButton.addClickListener(event -> generateNewSetOfTracks(numberField.getValue().intValue()));
         add(verticalLayout);
     }
 
@@ -60,12 +70,17 @@ public class PlaylistGeneratorOutput extends VerticalLayout {
         RecommendedPlaylist recommendedPlaylist = restService.changeQuantityOfRecommendedTracks(value);
         playlistTrackGrid.setItems(recommendedPlaylist.getPlaylistTracks());
         gridLabel.setText("Forecast for: " + recommendedPlaylist.getName() + " | Total: " + recommendedPlaylist.getNumberOfTracks());
+        updateButton.setVisible(false);
     }
 
     private void generateNewSetOfTracks(int value) {
         RecommendedPlaylist recommendedPlaylist = restService.updateFetchRecommendedPlaylist(value);
         playlistTrackGrid.setItems(recommendedPlaylist.getPlaylistTracks());
         gridLabel.setText("Forecast for: " + recommendedPlaylist.getName() + " | Total: " + recommendedPlaylist.getNumberOfTracks());
+    }
+
+    void setVisibleButton() {
+        updateButton.setVisible(true);
     }
 
 }

@@ -1,4 +1,4 @@
-package com.gpsy_front;
+package com.gpsy_front.layouts;
 
 import com.gpsy_front.domain.Playlist;
 import com.gpsy_front.forms.tracks.MostFrequentTrackForm;

@@ -7,6 +7,7 @@ import com.gpsy_front.forms.ParentForm;
 import com.gpsy_front.service.RestService;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
@@ -30,6 +31,8 @@ public class PlaylistChoseForm extends FormLayout {
         playlistSelect.setItemLabelGenerator(Playlist::getName);
         playlistSelect.setPlaceholder("Choose the playlist");
         playlistSelect.setItems(restService.getPlaylistsFromApi());
+
+        acceptButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         acceptButton.addClickListener(event -> save(playlistSelect.getValue()));
 
         verticalLayout.add(playlistSelect, acceptButton);

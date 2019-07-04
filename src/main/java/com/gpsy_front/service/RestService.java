@@ -14,7 +14,6 @@ import java.net.URI;
 import java.util.*;
 import java.util.stream.Collectors;
 
-@Service
 public final class RestService implements WebMvcConfigurer {
 
     public static final String GPSY_API_ROOT = "http://localhost:8080/v1/gpsy";
@@ -108,9 +107,19 @@ public final class RestService implements WebMvcConfigurer {
         updatePlaylist(playlist, popularTracks);
     }
 
-    public void updatePlaylistWithRecentTrack(Playlist playlist, Set<ParentTrack> recentrTracks) {
-        updatePlaylist(playlist, recentrTracks);
-    }
+   public void createNewPlaylist(Playlist playlist) {
+        Gson gson = new Gson();
+        String jsonContent = gson.toJson(playlist);
+
+        URI uri = UriComponentsBuilder.fromHttpUrl(GPSY_API_ROOT + "/playlists/addNewPlaylist").build().encode().toUri();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<String> entity = new HttpEntity<>(jsonContent, headers);
+        String answer = restTemplate.postForObject(uri, entity, String.class);
+
+       System.out.println(answer);
+   }
 
     public void updatePlaylist(Playlist playlist, Set<ParentTrack> parentTracks) {
         Gson gson = new Gson();
@@ -130,8 +139,8 @@ public final class RestService implements WebMvcConfigurer {
         String answer = restTemplate.postForObject(uri, entity, String.class);
 
         System.out.println(answer);
-    }
 
+}
     public void deleteTrackFromPlaylist(Playlist playlist, Set<PlaylistTrack> parentTrack) {
         Gson gson = new Gson();
         List<PlaylistTrack> playlistTracks = new ArrayList<>(parentTrack);
@@ -220,6 +229,5 @@ public final class RestService implements WebMvcConfigurer {
             System.out.println(e.getMessage());
             return new LyricsDto("n/a", "/na","n/a");
         }
-
     }
 }

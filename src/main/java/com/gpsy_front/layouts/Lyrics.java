@@ -1,4 +1,4 @@
-package com.gpsy_front;
+package com.gpsy_front.layouts;
 
 import com.gpsy_front.forms.lyrics.PopularTracksWithLyrics;
 import com.vaadin.flow.component.html.Div;
