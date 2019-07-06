@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 
 import com.gpsy_front.domain.*;
 import org.springframework.http.*;
-import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -141,6 +140,7 @@ public final class RestService implements WebMvcConfigurer {
         System.out.println(answer);
 
 }
+
     public void deleteTrackFromPlaylist(Playlist playlist, Set<PlaylistTrack> parentTrack) {
         Gson gson = new Gson();
         List<PlaylistTrack> playlistTracks = new ArrayList<>(parentTrack);
@@ -229,5 +229,69 @@ public final class RestService implements WebMvcConfigurer {
             System.out.println(e.getMessage());
             return new LyricsDto("n/a", "/na","n/a");
         }
+    }
+
+    public List<LyricsLibrary> fetchLyricsLibrary() {
+        URI uri = UriComponentsBuilder.fromHttpUrl(GPSY_API_ROOT + "/library/getLibraries").build().encode().toUri();
+
+        try {
+            LyricsLibrary[] lyricsLibraries = restTemplate.getForObject(uri, LyricsLibrary[].class);
+            List<LyricsLibrary> lyricsLibrariesList = Optional.ofNullable(lyricsLibraries)
+                    .map(Arrays::asList)
+                    .orElse(new ArrayList<>());
+
+            return lyricsLibrariesList ;
+
+        }catch(RestClientException e) {
+            System.out.println(e.getMessage());
+            return new ArrayList<>();
+        }
+    }
+
+    public LyricsLibrary addLibrary(LyricsLibrary library) {
+
+        Gson gson = new Gson();
+        String jsonContent = gson.toJson(library);
+
+        URI uri = UriComponentsBuilder.fromHttpUrl(GPSY_API_ROOT + "/library/add").build().encode().toUri();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<String> entity = new HttpEntity<>(jsonContent, headers);
+        String answer = restTemplate.postForObject(uri, entity, String.class);
+
+        System.out.println(answer);
+        return library;
+    }
+
+    public void deleteLibrary(LyricsLibrary lyricsLibrary) {
+        Gson gson = new Gson();
+
+        String jsonContent = gson.toJson(lyricsLibrary);
+        URI uri = UriComponentsBuilder.fromHttpUrl(GPSY_API_ROOT + "/library/delete")
+                .build().encode().toUri();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<String> entity = new HttpEntity<>(jsonContent, headers);
+        ResponseEntity answer = restTemplate.exchange(uri, HttpMethod.DELETE, entity, String.class);
+
+        System.out.println(answer);
+    }
+
+    public LyricsLibrary addLyricsToLibrary(LyricsLibrary library) {
+
+        Gson gson = new Gson();
+        String jsonContent = gson.toJson(library);
+
+        URI uri = UriComponentsBuilder.fromHttpUrl(GPSY_API_ROOT + "/library/lyrics/add").build().encode().toUri();
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        HttpEntity<String> entity = new HttpEntity<>(jsonContent, headers);
+        String answer = restTemplate.postForObject(uri, entity, String.class);
+
+        System.out.println(answer);
+        return library;
     }
 }

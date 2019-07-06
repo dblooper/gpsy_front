@@ -11,26 +11,29 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 public class PopularTracksWithLyrics extends FormLayout {
 
     private VerticalLayout verticalLayout = new VerticalLayout();
+    private VerticalLayout popularTracksLayout = new VerticalLayout();
     private Grid<MostFrequentTrack> userPopularTrack = new Grid<>(MostFrequentTrack.class);
     private Text textField = new Text("No track choosen");
     private Label gridLabel = new Label("Most frequent songs");
     private RestService restService = RestService.getInstance();
     private LyricsWindow lyricsWindow = new LyricsWindow(this);
+    private LyricsLibraryLyaout lyricsLibraryLyaout = new LyricsLibraryLyaout(lyricsWindow);
 
     public PopularTracksWithLyrics() {
         gridLabel.setClassName("grid-title");
         gridLabel.setSizeFull();
         userPopularTrack.setColumns("title", "authors", "popularity");
         userPopularTrack.setSelectionMode(Grid.SelectionMode.SINGLE);
+        popularTracksLayout.add(gridLabel, userPopularTrack, textField);
+        verticalLayout.add(popularTracksLayout, lyricsLibraryLyaout);
 
-        verticalLayout.add(gridLabel, userPopularTrack, textField);
-        verticalLayout.addClassName("forms-style");
+        lyricsLibraryLyaout.addClassName("forms-style");
+        popularTracksLayout.addClassName("forms-style");
         verticalLayout.setSizeFull();
         userPopularTrack.setItems(restService.getFrequentTracksFromApi());
 
         userPopularTrack.asSingleSelect().addValueChangeListener(event -> lyricsWindow.setTrack(userPopularTrack.asSingleSelect().getValue()));
 
         add(verticalLayout, lyricsWindow);
-
     }
 }

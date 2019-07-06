@@ -23,7 +23,7 @@ public class CreatePlaylistForm extends VerticalLayout {
     public CreatePlaylistForm(PlaylistForm playlistForm) {
         this.playlistForm = playlistForm;
 
-        text.setText("Remember! You cannot delete playlist from spotify after creation!");
+        text.setText("Remember! Due to Spotify policy, you cannot delete playlist from Spotify after creation!");
         textField.setPlaceholder("Name of playlist");
 
         button.addClickListener(event -> {
