@@ -2,7 +2,7 @@ package com.gpsy_front.forms.lyrics;
 
 import com.gpsy_front.domain.LyricsDto;
 import com.gpsy_front.domain.LyricsLibrary;
-import com.gpsy_front.service.RestService;
+import com.gpsy_front.service.LyricsService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -25,7 +25,7 @@ public class LyricsInLibraryForm extends VerticalLayout {
     private Grid<LyricsDto> lyricsGrid = new Grid<>(LyricsDto.class);
     private Binder<LyricsLibrary> lyricsLibraryBinder = new Binder<>(LyricsLibrary.class);
     private LyricsWindow lyricsWindow;
-    private RestService restService = RestService.getInstance();
+    private LyricsService lyricsService = LyricsService.getInstance();
     private LyricsLibraryForm lyricsLibraryForm;
 
     public LyricsInLibraryForm(LyricsWindow lyricsWindow, LyricsLibraryForm lyricsLibraryForm) {
@@ -74,7 +74,7 @@ public class LyricsInLibraryForm extends VerticalLayout {
     }
 
     private void deleteLibrary() {
-        restService.deleteLibrary(lyricsLibraryForm.getLyricsLibraryGrid().asSingleSelect().getValue().getId());
+        lyricsService.deleteLibrary(lyricsLibraryForm.getLyricsLibraryGrid().asSingleSelect().getValue().getId());
         lyricsLibraryForm.refresh();
     }
 
@@ -82,7 +82,7 @@ public class LyricsInLibraryForm extends VerticalLayout {
         LyricsLibrary currentLibrarySelection = lyricsLibraryForm.getLyricsLibraryGrid().asSingleSelect().getValue();
         List<LyricsDto> lyricsToAdd = new ArrayList<>();
         lyricsToAdd.add(lyricsGrid.asSingleSelect().getValue());
-        restService.deleteLyricsFromLibrary(new LyricsLibrary(currentLibrarySelection.getId(),
+        lyricsService.deleteLyricsFromLibrary(new LyricsLibrary(currentLibrarySelection.getId(),
                                                                 currentLibrarySelection.getLibraryName(),
                                                                 lyricsToAdd));
         lyricsLibraryForm.refresh();
@@ -94,7 +94,7 @@ public class LyricsInLibraryForm extends VerticalLayout {
 
     private void updateLibraryName() {
         LyricsLibrary currentLibrary = lyricsLibraryForm.getLyricsLibraryGrid().asSingleSelect().getValue();
-        restService.updateLibraryName(new LyricsLibrary(currentLibrary.getId(), libraryName.getValue(), new ArrayList<>()));
+        lyricsService.updateLibraryName(new LyricsLibrary(currentLibrary.getId(), libraryName.getValue(), new ArrayList<>()));
         lyricsLibraryForm.refresh();
     }
 
@@ -102,7 +102,7 @@ public class LyricsInLibraryForm extends VerticalLayout {
         LyricsLibrary currentLibrary = lyricsLibraryForm.getLyricsLibraryGrid().asSingleSelect().getValue();
         List<LyricsDto> lyricstToAddList = new ArrayList<>();
         lyricstToAddList.add(lyricsWindow.getCurrentLyrics());
-        restService.addLyricsToLibrary(new LyricsLibrary(currentLibrary.getId(), currentLibrary.getLibraryName(),lyricstToAddList));
+        lyricsService.addLyricsToLibrary(new LyricsLibrary(currentLibrary.getId(), currentLibrary.getLibraryName(),lyricstToAddList));
         lyricsLibraryForm.refresh();
     }
 

@@ -13,6 +13,7 @@ import com.vaadin.flow.data.binder.Binder;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 public class PlaylistTrackForm extends VerticalLayout {
 
@@ -81,7 +82,9 @@ public class PlaylistTrackForm extends VerticalLayout {
     }
 
     public void deleteTrack() {
-        restService.deleteTrackFromPlaylist(playlistFormTopLayout.getCurrentPlaylist(), playlistTrackGrid.asMultiSelect().getSelectedItems());
+        Set<PlaylistTrack> trackToDelete = playlistTrackGrid.asMultiSelect().getSelectedItems();
+        Playlist playlistToUpdate = playlistFormTopLayout.getCurrentPlaylist();
+        restService.deleteTrackFromPlaylist(new Playlist(playlistToUpdate.getName(), playlistToUpdate.getPlaylistStringId(), new ArrayList<>(trackToDelete)));
         playlistFormTopLayout.updateInformation("Deleted: " + playlistTrackGrid.asMultiSelect().getSelectedItems().toString());
     }
 }
