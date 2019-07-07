@@ -111,8 +111,6 @@ public final class RestService {
         try {
             RecommendedTrack[] recommendedTracks = restTemplate.getForObject(uri, RecommendedTrack[].class);
             List<RecommendedTrack> recommendedTrackList = Optional.ofNullable(recommendedTracks).map(Arrays::asList).orElse(new ArrayList<>());
-//            recommendedTrackList.stream()
-//                    .forEach(track -> track.setLink(new Anchor(track.getSample(),"Click")));
             return recommendedTrackList;
 
         }catch(RestClientException e) {
@@ -129,7 +127,7 @@ public final class RestService {
         Gson gson = new Gson();
         String jsonContent = gson.toJson(playlist);
 
-        URI uri = UriComponentsBuilder.fromHttpUrl(GPSY_API_ROOT + "/playlists/addNewPlaylist").build().encode().toUri();
+        URI uri = UriComponentsBuilder.fromHttpUrl(GPSY_API_ROOT + "/playlists/new").build().encode().toUri();
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -148,7 +146,7 @@ public final class RestService {
         Playlist playlistUpdated = new Playlist(playlist.getName(), playlist.getPlaylistStringId(), popularTracksTooUpdate);
 
         String jsonContent = gson.toJson(playlistUpdated);
-        URI uri = UriComponentsBuilder.fromHttpUrl(GPSY_API_ROOT + "/playlists/addToPlaylist")
+        URI uri = UriComponentsBuilder.fromHttpUrl(GPSY_API_ROOT + "/playlists/tracks/add")
                 .build().encode().toUri();
 
         HttpHeaders headers = new HttpHeaders();
@@ -167,7 +165,7 @@ public final class RestService {
         Playlist playlistWithDeleteTrack = new Playlist(playlist.getName(), playlist.getPlaylistStringId(), playlistTracks);
 
         String jsonContent = gson.toJson(playlistWithDeleteTrack);
-        URI uri = UriComponentsBuilder.fromHttpUrl(GPSY_API_ROOT + "/playlists/deleteTrack")
+        URI uri = UriComponentsBuilder.fromHttpUrl(GPSY_API_ROOT + "/playlists/tracks/delete")
                 .build().encode().toUri();
 
         HttpHeaders headers = new HttpHeaders();
@@ -183,13 +181,13 @@ public final class RestService {
 
         String jsonContent = gson.toJson(playlist);
 
-        URI uri = UriComponentsBuilder.fromHttpUrl(GPSY_API_ROOT + "/playlists/updateDetails")
+        URI uri = UriComponentsBuilder.fromHttpUrl(GPSY_API_ROOT + "/playlists/update\"")
                 .build().encode().toUri();
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<String> entity = new HttpEntity<>(jsonContent, headers);
-        ResponseEntity answer = restTemplate.exchange(uri, HttpMethod.POST, entity, String.class);
+        ResponseEntity answer = restTemplate.exchange(uri, HttpMethod.PUT, entity, String.class);
 
         System.out.println(answer);
     }
@@ -237,7 +235,7 @@ public final class RestService {
 
     public LyricsDto getLyrics(String title, String author) {
 
-        URI uri = UriComponentsBuilder.fromHttpUrl(GPSY_API_ROOT + "/audd/getLyrics/")
+        URI uri = UriComponentsBuilder.fromHttpUrl(GPSY_API_ROOT + "/musixmatch/lyrics")
                 .queryParam("title", title)
                 .queryParam("author", author)
                 .build().encode().toUri();
@@ -251,7 +249,7 @@ public final class RestService {
     }
 
     public List<LyricsLibrary> getLyricsLibrary() {
-        URI uri = UriComponentsBuilder.fromHttpUrl(GPSY_API_ROOT + "/library/getLibraries").build().encode().toUri();
+        URI uri = UriComponentsBuilder.fromHttpUrl(GPSY_API_ROOT + "/libraries/get").build().encode().toUri();
 
         try {
             LyricsLibrary[] lyricsLibraries = restTemplate.getForObject(uri, LyricsLibrary[].class);
@@ -272,7 +270,7 @@ public final class RestService {
         Gson gson = new Gson();
         String jsonContent = gson.toJson(library);
 
-        URI uri = UriComponentsBuilder.fromHttpUrl(GPSY_API_ROOT + "/library/add").build().encode().toUri();
+        URI uri = UriComponentsBuilder.fromHttpUrl(GPSY_API_ROOT + "/libraries/new").build().encode().toUri();
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -284,14 +282,9 @@ public final class RestService {
     }
 
     public void deleteLibrary(long id) {
-        URI uri = UriComponentsBuilder.fromHttpUrl(GPSY_API_ROOT + "/library/delete")
+        URI uri = UriComponentsBuilder.fromHttpUrl(GPSY_API_ROOT + "/libraries/delete")
                 .queryParam("libraryId", id)
                 .build().encode().toUri();
-
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.setContentType(MediaType.APPLICATION_JSON);
-//        HttpEntity<String> entity = new HttpEntity<>(jsonContent, headers);
-//        ResponseEntity answer = restTemplate.exchange(uri, HttpMethod.DELETE, entity, String.class);
         restTemplate.delete(uri);
     }
 
@@ -300,7 +293,7 @@ public final class RestService {
         Gson gson = new Gson();
         String jsonContent = gson.toJson(library);
 
-        URI uri = UriComponentsBuilder.fromHttpUrl(GPSY_API_ROOT + "/library/lyrics/add").build().encode().toUri();
+        URI uri = UriComponentsBuilder.fromHttpUrl(GPSY_API_ROOT + "/libraries/lyrics/add").build().encode().toUri();
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -317,7 +310,7 @@ public final class RestService {
 
         String jsonContent = gson.toJson(library);
 
-        URI uri = UriComponentsBuilder.fromHttpUrl(GPSY_API_ROOT + "/library/lyrics/delete").build().encode().toUri();
+        URI uri = UriComponentsBuilder.fromHttpUrl(GPSY_API_ROOT + "/libraries/lyrics/delete").build().encode().toUri();
 
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -331,7 +324,8 @@ public final class RestService {
 
         String jsonContent = gson.toJson(library);
 
-        URI uri = UriComponentsBuilder.fromHttpUrl(GPSY_API_ROOT + "/library/update").build().encode().toUri();
+        URI uri = UriComponentsBuilder.fromHttpUrl(GPSY_API_ROOT + "/libraries/update").build().encode().toUri();
+
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         HttpEntity<String> entity = new HttpEntity<>(jsonContent, headers);
