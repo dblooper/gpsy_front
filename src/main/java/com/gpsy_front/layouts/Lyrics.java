@@ -1,6 +1,6 @@
 package com.gpsy_front.layouts;
 
-import com.gpsy_front.forms.lyrics.PopularTracksWithLyrics;
+import com.gpsy_front.forms.lyrics.LyricsAndLibraryTopLayout;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
@@ -10,10 +10,10 @@ import com.vaadin.flow.router.RouterLayout;
 public class Lyrics extends Div implements RouterLayout {
 
     VerticalLayout verticalLayout = new VerticalLayout();
-    PopularTracksWithLyrics popularTracksWithLyrics = new PopularTracksWithLyrics();
+    LyricsAndLibraryTopLayout lyricsAndLibraryTopLayout = new LyricsAndLibraryTopLayout();
 
     public Lyrics() {
-        verticalLayout.add(popularTracksWithLyrics);
+        verticalLayout.add(lyricsAndLibraryTopLayout);
         add(verticalLayout);
     }
 }

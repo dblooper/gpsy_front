@@ -8,7 +8,7 @@ import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
-public class PlaylistForm extends VerticalLayout {
+public class PlaylistFormTopLayout extends VerticalLayout {
 
     private VerticalLayout verticalLayout = new VerticalLayout();
     private VerticalLayout playlistContent = new VerticalLayout();
@@ -20,7 +20,7 @@ public class PlaylistForm extends VerticalLayout {
     private PlaylistTrackForm playlistTrackForm = new PlaylistTrackForm(this);
     private CreatePlaylistForm createPlaylistForm = new CreatePlaylistForm(this);
 
-    public PlaylistForm() {
+    public PlaylistFormTopLayout() {
         gridLabel.setClassName("grid-title");
         userPlaylistsGrid.setColumns("name", "quantityOfTracks");
         userPlaylistsGrid.setSelectionMode(Grid.SelectionMode.SINGLE);

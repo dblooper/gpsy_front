@@ -5,7 +5,6 @@ import com.gpsy_front.service.RestService;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
-import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 
@@ -14,21 +13,21 @@ import java.util.ArrayList;
 public class CreatePlaylistForm extends VerticalLayout {
 
     private VerticalLayout verticalLayout = new VerticalLayout();
-    private PlaylistForm playlistForm;
+    private PlaylistFormTopLayout playlistFormTopLayout;
     private RestService restService = RestService.getInstance();
     private TextField textField = new TextField();
     private Text text = new Text("");
     private Button button = new Button("Create a playlist");
 
-    public CreatePlaylistForm(PlaylistForm playlistForm) {
-        this.playlistForm = playlistForm;
+    public CreatePlaylistForm(PlaylistFormTopLayout playlistFormTopLayout) {
+        this.playlistFormTopLayout = playlistFormTopLayout;
 
         text.setText("Remember! Due to Spotify policy, you cannot delete playlist from Spotify after creation!");
         textField.setPlaceholder("Name of playlist");
 
         button.addClickListener(event -> {
             restService.createNewPlaylist(new Playlist(textField.getValue(), "", new ArrayList<>()));
-            playlistForm.refresh();
+            playlistFormTopLayout.refresh();
         });
         button.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 

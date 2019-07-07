@@ -1,10 +1,8 @@
 package com.gpsy_front.layouts;
 
 import com.gpsy_front.domain.Playlist;
-import com.gpsy_front.forms.tracks.MostFrequentTrackForm;
-import com.gpsy_front.forms.tracks.PopularTrackForm;
-import com.gpsy_front.forms.tracks.RecentTrackForm;
-import com.gpsy_front.forms.tracks.RecommendedTrackForm;
+import com.gpsy_front.forms.tracks.*;
+import com.gpsy_front.service.LyricsService;
 import com.gpsy_front.service.RestService;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -16,15 +14,15 @@ import java.util.List;
 @Route(value = "tracks", layout = MainViewWithMainBar.class)
 public class Tracks extends Div {
 
-    private VerticalLayout verticalLayout = new VerticalLayout();
+    private VerticalLayout verticalLayout1 = new VerticalLayout();
+    private VerticalLayout verticalLayout2 = new VerticalLayout();
     private HorizontalLayout horizontalLayout = new HorizontalLayout();
-    private HorizontalLayout horizontalLayoutDown = new HorizontalLayout();
-
     private RecentTrackForm recentTrackForm;
     private MostFrequentTrackForm mostFrequentTrackForm;
     private PopularTrackForm popularTrackForm;
     private RecommendedTrackForm recommendedTrackForm;
     private RestService restService = RestService.getInstance();
+    private FreeSearchTrackForm freeSearchTrackForm;
 
     public Tracks() {
         List<Playlist> playlists = restService.getPlaylistsFromApi();
@@ -32,20 +30,19 @@ public class Tracks extends Div {
         this.mostFrequentTrackForm = new MostFrequentTrackForm(playlists);
         this.recommendedTrackForm = new RecommendedTrackForm(playlists);
         this.popularTrackForm = new PopularTrackForm(playlists);
+        this.freeSearchTrackForm = new FreeSearchTrackForm(playlists);
 
-//        recommendedTrackForm.setPadding(false);
-//        recommendedTrackForm.setMargin(false);
-//
-//        mostFrequentTrackForm.setMargin(false);
-//        mostFrequentTrackForm.setPadding(false);
+        verticalLayout1.add(recentTrackForm, recommendedTrackForm);
+        verticalLayout1.setSizeFull();
+        verticalLayout2.add(freeSearchTrackForm, mostFrequentTrackForm, popularTrackForm);
+        freeSearchTrackForm.setHeight("20%");
+        verticalLayout2.setSizeFull();
+        verticalLayout1.setPadding(false);
+        verticalLayout2.setPadding(false);
 
-        horizontalLayout.add(recentTrackForm, mostFrequentTrackForm);
-        horizontalLayout.setSizeFull();
-        horizontalLayoutDown.add(recommendedTrackForm, popularTrackForm);
-//        recommendedTrackForm.setWidth("50%");
-        horizontalLayoutDown.setSizeFull();
-        verticalLayout.add(horizontalLayout, horizontalLayoutDown);
-        verticalLayout.setPadding(false);
-        add(verticalLayout);
+        horizontalLayout.add(verticalLayout1, verticalLayout2);
+        horizontalLayout.setPadding(false);
+
+        add(horizontalLayout);
     }
 }

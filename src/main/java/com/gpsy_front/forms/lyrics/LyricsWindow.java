@@ -1,11 +1,9 @@
 package com.gpsy_front.forms.lyrics;
 
 import com.gpsy_front.domain.*;
-import com.gpsy_front.layouts.Lyrics;
 import com.gpsy_front.service.RestService;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
-import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -20,7 +18,7 @@ public class LyricsWindow extends VerticalLayout {
     private VerticalLayout searchLayoutWithLabel = new VerticalLayout();
     private HorizontalLayout searchForm = new HorizontalLayout();
     private MostFrequentTrack track;
-    private PopularTracksWithLyrics popularTracksWithLyrics;
+    private LyricsAndLibraryTopLayout lyricsAndLibraryTopLayout;
     private TextField title = new TextField("Title:");
     private TextField author = new TextField("Author:");
     private Button searchButton = new Button("Search");
@@ -31,8 +29,8 @@ public class LyricsWindow extends VerticalLayout {
     private Label searchLyricsLabel = new Label("Search Lyrics");
 
 
-    public LyricsWindow(PopularTracksWithLyrics popularTracksWithLyrics) {
-        this.popularTracksWithLyrics = popularTracksWithLyrics;
+    public LyricsWindow(LyricsAndLibraryTopLayout lyricsAndLibraryTopLayout) {
+        this.lyricsAndLibraryTopLayout = lyricsAndLibraryTopLayout;
         this.track = new MostFrequentTrack("n/a", "n/a", "n/a", 0);
         this.textArea = new TextArea("Waiting for track to search lyrics");
         title.setPlaceholder("Type title");
@@ -69,8 +67,8 @@ public class LyricsWindow extends VerticalLayout {
     public void setTrack(MostFrequentTrack mostFrequentTrack) {
         if(mostFrequentTrack != null) {
             this.track = mostFrequentTrack;
-            LyricsDto lyricsDto = restService.fetchLyrics(mostFrequentTrack.getTitle(), mostFrequentTrack.getAuthors());
-//            LyricsDto lyricsDto = restService.fetchLyrics("rolling", "adele");
+            LyricsDto lyricsDto = restService.getLyrics(mostFrequentTrack.getTitle(), mostFrequentTrack.getAuthors());
+//            LyricsDto lyricsDto = restService.getLyrics("rolling", "adele");
             textArea.setValue(lyricsDto.getLyrics());
             titleLabel.setText(track.getTitle());
             authorLabel.setText(track.getAuthors());
@@ -86,7 +84,7 @@ public class LyricsWindow extends VerticalLayout {
             && !(title.getValue().length() < 3)
             && !(author.getValue().length() < 3)) {
 
-            LyricsDto lyricsDto = restService.fetchLyrics(title.getValue(), author.getValue());
+            LyricsDto lyricsDto = restService.getLyrics(title.getValue(), author.getValue());
             titleLabel.setText(title.getValue());
             authorLabel.setText(author.getValue());
 
@@ -126,5 +124,9 @@ public class LyricsWindow extends VerticalLayout {
             textArea.setLabel("Title: n/a | Author: n/a");
             textArea.setValue("Waiting for track to search lyrics");
         }
+    }
+
+    public TextArea getLyricsTextArea() {
+        return this.textArea;
     }
 }

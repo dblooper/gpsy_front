@@ -24,11 +24,11 @@ public class PlaylistTrackForm extends VerticalLayout {
     private Button deleteButton = new Button("Delete the tracks");
     private TextField name = new TextField("Playlist Name");
     private List<PlaylistTrack> tracks = new ArrayList<>();
-    private PlaylistForm playlistForm;
+    private PlaylistFormTopLayout playlistFormTopLayout;
     private Binder<Playlist> playlistBinder = new Binder<>(Playlist.class);
 
-    public PlaylistTrackForm(PlaylistForm playlistForm) {
-        this.playlistForm = playlistForm;
+    public PlaylistTrackForm(PlaylistFormTopLayout playlistFormTopLayout) {
+        this.playlistFormTopLayout = playlistFormTopLayout;
 
         playlistTrackGrid.setColumns("title", "authors");
         playlistTrackGrid.setSelectionMode(Grid.SelectionMode.MULTI);
@@ -38,11 +38,11 @@ public class PlaylistTrackForm extends VerticalLayout {
         deleteButton.addClickListener(event ->{
             deleteTrack();
             playlistTrackGrid.setItems(tracks);
-            playlistForm.refresh();
+            playlistFormTopLayout.refresh();
         });
         updateNameButton.addClickListener(event -> {
             updatePlaylist();
-            playlistForm.refresh();
+            playlistFormTopLayout.refresh();
         });
 
         mainContent.add(updateNameArea, playlistTrackGrid, deleteButton);
@@ -75,13 +75,13 @@ public class PlaylistTrackForm extends VerticalLayout {
     }
 
     void updatePlaylist() {
-        Playlist playlist = playlistForm.getCurrentPlaylist();
+        Playlist playlist = playlistFormTopLayout.getCurrentPlaylist();
         restService.updatePlaylistDetails(new Playlist(name.getValue(), playlist.getPlaylistStringId(), playlist.getTracks()));
-        playlistForm.updateInformation(playlist.getName() + " has been updated!");
+        playlistFormTopLayout.updateInformation(playlist.getName() + " has been updated!");
     }
 
     public void deleteTrack() {
-        restService.deleteTrackFromPlaylist(playlistForm.getCurrentPlaylist(), playlistTrackGrid.asMultiSelect().getSelectedItems());
-        playlistForm.updateInformation("Deleted: " + playlistTrackGrid.asMultiSelect().getSelectedItems().toString());
+        restService.deleteTrackFromPlaylist(playlistFormTopLayout.getCurrentPlaylist(), playlistTrackGrid.asMultiSelect().getSelectedItems());
+        playlistFormTopLayout.updateInformation("Deleted: " + playlistTrackGrid.asMultiSelect().getSelectedItems().toString());
     }
 }

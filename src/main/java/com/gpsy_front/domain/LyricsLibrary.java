@@ -19,14 +19,15 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class LyricsLibrary {
 
+    @JsonProperty(value = "id")
+    private long id;
+
     @JsonProperty(value = "libraryName")
     private String libraryName;
 
     @JsonProperty(value = "lyrics")
     private List<LyricsDto> lyrics = new ArrayList<>();
 
-    @JsonProperty(value = "libraryCode")
-    private String libraryCode;
 
     public LyricsLibrary(String libraryName, List<LyricsDto> lyrics) {
         this.libraryName = libraryName;

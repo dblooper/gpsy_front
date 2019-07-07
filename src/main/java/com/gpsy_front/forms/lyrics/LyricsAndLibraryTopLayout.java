@@ -8,7 +8,7 @@ import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
-public class PopularTracksWithLyrics extends FormLayout {
+public class LyricsAndLibraryTopLayout extends FormLayout {
 
     private VerticalLayout verticalLayout = new VerticalLayout();
     private VerticalLayout popularTracksLayout = new VerticalLayout();
@@ -17,17 +17,17 @@ public class PopularTracksWithLyrics extends FormLayout {
     private Label gridLabel = new Label("Most frequent songs");
     private RestService restService = RestService.getInstance();
     private LyricsWindow lyricsWindow = new LyricsWindow(this);
-    private LyricsLibraryLyaout lyricsLibraryLyaout = new LyricsLibraryLyaout(lyricsWindow);
+    private LyricsLibraryForm lyricsLibraryForm = new LyricsLibraryForm(lyricsWindow);
 
-    public PopularTracksWithLyrics() {
+    public LyricsAndLibraryTopLayout() {
         gridLabel.setClassName("grid-title");
         gridLabel.setSizeFull();
         userPopularTrack.setColumns("title", "authors", "popularity");
         userPopularTrack.setSelectionMode(Grid.SelectionMode.SINGLE);
         popularTracksLayout.add(gridLabel, userPopularTrack, textField);
-        verticalLayout.add(popularTracksLayout, lyricsLibraryLyaout);
+        verticalLayout.add(lyricsLibraryForm, popularTracksLayout);
 
-        lyricsLibraryLyaout.addClassName("forms-style");
+        lyricsLibraryForm.addClassName("forms-style");
         popularTracksLayout.addClassName("forms-style");
         verticalLayout.setSizeFull();
         userPopularTrack.setItems(restService.getFrequentTracksFromApi());

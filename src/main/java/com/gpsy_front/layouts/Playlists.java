@@ -1,6 +1,6 @@
 package com.gpsy_front.layouts;
 
-import com.gpsy_front.forms.playlist.PlaylistForm;
+import com.gpsy_front.forms.playlist.PlaylistFormTopLayout;
 import com.gpsy_front.forms.playlist.PlaylistGeneratorOutput;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -13,16 +13,16 @@ public class Playlists extends Div {
     HorizontalLayout horizontalLayout = new HorizontalLayout();
     VerticalLayout verticalLayoutLeft = new VerticalLayout();
     VerticalLayout verticalLayoutRight = new VerticalLayout();
-    private PlaylistForm playlistForm = new PlaylistForm();
+    private PlaylistFormTopLayout playlistFormTopLayout = new PlaylistFormTopLayout();
     private PlaylistGeneratorOutput playlistGeneratorOutput = new PlaylistGeneratorOutput();
 
     public Playlists() {
 
-        verticalLayoutLeft.add(playlistForm);
+        verticalLayoutLeft.add(playlistFormTopLayout);
         verticalLayoutLeft.setSizeFull();
         verticalLayoutRight.add(playlistGeneratorOutput);
         verticalLayoutRight.setSizeFull();
-        horizontalLayout.add(playlistForm, playlistGeneratorOutput);
+        horizontalLayout.add(playlistFormTopLayout, playlistGeneratorOutput);
         add(horizontalLayout);
     }
 }
