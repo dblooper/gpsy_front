@@ -1,10 +1,11 @@
 package com.gpsy_front.forms.lyrics;
 
-import com.gpsy_front.domain.LyricsDto;
+import com.gpsy_front.domain.Lyrics;
 import com.gpsy_front.domain.LyricsLibrary;
 import com.gpsy_front.service.LyricsService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
@@ -16,13 +17,15 @@ import java.util.List;
 public class LyricsInLibraryForm extends VerticalLayout {
 
     private HorizontalLayout updateForm = new HorizontalLayout();
-    private HorizontalLayout deleteForm = new HorizontalLayout();
+    private VerticalLayout deleteForm = new VerticalLayout();
+    private HorizontalLayout buttonsForm = new HorizontalLayout();
+    private VerticalLayout lyricsButtonsForm = new VerticalLayout();
     private TextField libraryName = new TextField("Library Name");
     private Button updateButton = new Button("Update Name");
-    private Button addLyricsButton = new Button("Add Viewed Lyrics");
+    private Button addLyricsButton = new Button("Add Shown Lyrics");
     private Button deleteLyricsButton = new Button("Delete Lyrics");
     private Button deleteLibraryButton = new Button("Delete Library");
-    private Grid<LyricsDto> lyricsGrid = new Grid<>(LyricsDto.class);
+    private Grid<Lyrics> lyricsGrid = new Grid<>(Lyrics.class);
     private Binder<LyricsLibrary> lyricsLibraryBinder = new Binder<>(LyricsLibrary.class);
     private LyricsWindow lyricsWindow;
     private LyricsService lyricsService = LyricsService.getInstance();
@@ -34,32 +37,45 @@ public class LyricsInLibraryForm extends VerticalLayout {
 
         lyricsWindow.getLyricsTextArea().addValueChangeListener(event -> showAddVievedLyricsBitton());
 
-        lyricsGrid.setColumns("title", "artist");
+        lyricsGrid.setColumns("title", "artists");
         lyricsGrid.setSelectionMode(Grid.SelectionMode.SINGLE);
 
         lyricsGrid.addSelectionListener(event -> showDeleteButton());
 
         lyricsLibraryBinder.bindInstanceFields(this);
-        updateForm.add(libraryName, updateButton, addLyricsButton);
-        updateForm.setAlignItems(Alignment.END);
+        updateForm.add(libraryName, updateButton);
+
         updateButton.addClickListener(event -> updateLibraryName());
 
         addLyricsButton.addClickListener(event -> addCurrentlyDisplayedLyricsToLibrary());
 
-        deleteForm.add(deleteLyricsButton, deleteLibraryButton);
+        deleteForm.add(deleteLibraryButton);
+        lyricsButtonsForm.add(addLyricsButton, deleteLyricsButton);
+
+        buttonsForm.add(deleteForm, lyricsButtonsForm);
 
         lyricsGrid.asSingleSelect().addValueChangeListener(event -> setLyricsInWindow());
 
         deleteLibraryButton.addClickListener(event -> deleteLibrary());
         deleteLyricsButton.addClickListener(event -> deleteLyrics());
 
-        add(updateForm, lyricsGrid, deleteForm);
+        add(updateForm, lyricsGrid, buttonsForm);
         setVisible(false);
+        lyricsGrid.setSizeFull();
         addLyricsButton.setVisible(false);
         deleteLyricsButton.setVisible(false);
+        lyricsButtonsForm.setAlignItems(Alignment.END);
+        buttonsForm.setSizeFull();
+        updateForm.setAlignItems(Alignment.END);
+        deleteForm.setSizeFull();
+        deleteForm.setPadding(false);
+        lyricsButtonsForm.setPadding(false);
+        lyricsButtonsForm.setMargin(false);
+        lyricsButtonsForm.setPadding(false);
+
     }
 
-    private void setLyrics(List<LyricsDto> lyrics) {
+    private void setLyrics(List<Lyrics> lyrics) {
         this.lyricsGrid.setItems(lyrics);
     }
 
@@ -74,36 +90,53 @@ public class LyricsInLibraryForm extends VerticalLayout {
     }
 
     private void deleteLibrary() {
-        lyricsService.deleteLibrary(lyricsLibraryForm.getLyricsLibraryGrid().asSingleSelect().getValue().getId());
+        LyricsLibrary libraryToDelete= lyricsLibraryForm.getLyricsLibraryGrid().asSingleSelect().getValue();
+        lyricsService.deleteLibrary(libraryToDelete.getId());
         lyricsLibraryForm.refresh();
+        Notification.show("Library: " + libraryToDelete.getLibraryName() + " has been deleted");
     }
 
     private void deleteLyrics() {
         LyricsLibrary currentLibrarySelection = lyricsLibraryForm.getLyricsLibraryGrid().asSingleSelect().getValue();
-        List<LyricsDto> lyricsToAdd = new ArrayList<>();
-        lyricsToAdd.add(lyricsGrid.asSingleSelect().getValue());
+        List<Lyrics> lyricsToDelete = new ArrayList<>();
+        lyricsToDelete.add(lyricsGrid.asSingleSelect().getValue());
         lyricsService.deleteLyricsFromLibrary(new LyricsLibrary(currentLibrarySelection.getId(),
                                                                 currentLibrarySelection.getLibraryName(),
-                                                                lyricsToAdd));
+                                                                lyricsToDelete));
         lyricsLibraryForm.refresh();
+        Notification.show("Lyrics: " + lyricsToDelete.get(0).getTitle() + " have been deleted from: " + currentLibrarySelection.getLibraryName());
     }
 
     private void setLyricsInWindow() {
+
         lyricsWindow.setLyrics(lyricsGrid.asSingleSelect().getValue());
+
+        if(lyricsGrid.asSingleSelect().getValue() == null) {
+            addLyricsButton.setVisible(false);
+        } else {
+            addLyricsButton.setVisible(true);
+        }
     }
 
     private void updateLibraryName() {
-        LyricsLibrary currentLibrary = lyricsLibraryForm.getLyricsLibraryGrid().asSingleSelect().getValue();
-        lyricsService.updateLibraryName(new LyricsLibrary(currentLibrary.getId(), libraryName.getValue(), new ArrayList<>()));
-        lyricsLibraryForm.refresh();
+        if(libraryName.getValue().length() > 3) {
+            LyricsLibrary currentLibrary = lyricsLibraryForm.getLyricsLibraryGrid().asSingleSelect().getValue();
+            String newLibraryName = libraryName.getValue();
+            lyricsService.updateLibraryName(new LyricsLibrary(currentLibrary.getId(), newLibraryName, new ArrayList<>()));
+            lyricsLibraryForm.refresh();
+            Notification.show("Library name has been updated to: " + newLibraryName);
+        }else {
+            Notification.show("You must type at least 4 characters to proceed!",3000, Notification.Position.TOP_START);
+        }
     }
 
-    private void addCurrentlyDisplayedLyricsToLibrary() {
+    public void addCurrentlyDisplayedLyricsToLibrary() {
         LyricsLibrary currentLibrary = lyricsLibraryForm.getLyricsLibraryGrid().asSingleSelect().getValue();
-        List<LyricsDto> lyricstToAddList = new ArrayList<>();
+        List<Lyrics> lyricstToAddList = new ArrayList<>();
         lyricstToAddList.add(lyricsWindow.getCurrentLyrics());
         lyricsService.addLyricsToLibrary(new LyricsLibrary(currentLibrary.getId(), currentLibrary.getLibraryName(),lyricstToAddList));
         lyricsLibraryForm.refresh();
+        Notification.show("Currently shown lyrics: " + lyricstToAddList.get(0).getTitle() + "have been saved to: " + currentLibrary.getLibraryName());
     }
 
     private void showDeleteButton() {
@@ -120,4 +153,5 @@ public class LyricsInLibraryForm extends VerticalLayout {
         }
         addLyricsButton.setVisible(true);
     }
+
 }

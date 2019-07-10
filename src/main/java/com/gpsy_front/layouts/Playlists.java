@@ -24,5 +24,6 @@ public class Playlists extends Div {
         verticalLayoutRight.setSizeFull();
         horizontalLayout.add(playlistFormTopLayout, playlistGeneratorOutput);
         add(horizontalLayout);
+        setClassName("main-frame");
     }
 }

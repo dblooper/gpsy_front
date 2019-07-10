@@ -23,20 +23,19 @@ public class PlaylistGeneratorOutput extends VerticalLayout {
     NumberField numberField = new NumberField("Tracks quantity");
     private Label gridLabel = new Label("");
     private RestService restService = RestService.getInstance();
-    private Binder<NumberField> validationBinder = new Binder();
 
     public PlaylistGeneratorOutput() {
 
         gridLabel.setClassName("grid-title");
 
-        playlistTrackGrid.setColumns("title", "authors");
+        playlistTrackGrid.setColumns("title", "artists");
         playlistTrackGrid.addComponentColumn(track -> {
             if(track.getSample() != null) {
                 Anchor anchor = new Anchor(track.getSample(), "Click");
                 anchor.setTarget("tab");
                 return anchor;
             } else {
-                Anchor anchor = new Anchor("https://www.youtube.com/results?search_query=" + track.getTitle()+ " " + track.getAuthors(), "Search on YT");
+                Anchor anchor = new Anchor("https://www.youtube.com/results?search_query=" + track.getTitle()+ " " + track.getArtists(), "Search on YT");
                 anchor.setTarget("tab");
                 return anchor;
             }

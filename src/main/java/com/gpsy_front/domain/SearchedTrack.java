@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class SearchedTrack extends RecommendedTrack {
 
-    public SearchedTrack(String trackId, String title, String authors, String sample) {
-        super(trackId, title, authors, sample);
+    public SearchedTrack(String trackId, String title, String artists, String sample) {
+        super(trackId, title, artists, sample);
     }
 }

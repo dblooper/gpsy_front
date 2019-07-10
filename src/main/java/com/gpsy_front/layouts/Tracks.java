@@ -35,14 +35,16 @@ public class Tracks extends Div {
         verticalLayout1.add(recentTrackForm, recommendedTrackForm);
         verticalLayout1.setSizeFull();
         verticalLayout2.add(freeSearchTrackForm, mostFrequentTrackForm, popularTrackForm);
+
+        horizontalLayout.add(verticalLayout1, verticalLayout2);
+
+        add(horizontalLayout);
+        setClassName("main-frame");
         freeSearchTrackForm.setHeight("20%");
         verticalLayout2.setSizeFull();
         verticalLayout1.setPadding(false);
         verticalLayout2.setPadding(false);
-
-        horizontalLayout.add(verticalLayout1, verticalLayout2);
+        verticalLayout1.setMargin(false);
         horizontalLayout.setPadding(false);
-
-        add(horizontalLayout);
     }
 }

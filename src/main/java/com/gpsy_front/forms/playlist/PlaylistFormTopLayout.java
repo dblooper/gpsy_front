@@ -40,8 +40,14 @@ public class PlaylistFormTopLayout extends VerticalLayout {
         verticalLayout.setPadding(false);
 
         userPlaylistsGrid.asSingleSelect().addValueChangeListener(event -> {
+            if(userPlaylistsGrid.asSingleSelect().getValue() != null) {
+                textField.setText(userPlaylistsGrid.asSingleSelect().getValue().getName() + " selected");
+            } else {
+                textField.setText("No playlist selected");
+            }
             playlistTrackForm.setPlaylist(userPlaylistsGrid.asSingleSelect().getValue());
         });
+
         add(verticalLayout);
         setSizeFull();
     }

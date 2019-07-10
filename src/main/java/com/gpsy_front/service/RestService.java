@@ -107,7 +107,7 @@ public final class RestService {
 
     public void updatePlaylistWithPopularTrack(Playlist playlist, Set<ParentTrack> popularTracks) {
         List<PlaylistTrack> popularTracksTooUpdate = popularTracks.stream()
-                .map(track -> new PlaylistTrack(track.getTrackId(), track.getTitle(), track.getAuthors()))
+                .map(track -> new PlaylistTrack(track.getTrackStringId(), track.getTitle(), track.getArtists()))
                 .collect(Collectors.toList());
 
         Playlist playlistUpdated = new Playlist(playlist.getName(), playlist.getPlaylistStringId(), popularTracksTooUpdate);
@@ -164,16 +164,16 @@ public final class RestService {
         }
     }
 
-    public LyricsDto getLyrics(String title, String author) {
+    public Lyrics getLyrics(String title, String author) {
         URI uri = UriComponentsBuilder.fromHttpUrl(GPSY_API_ROOT + "/musixmatch/lyrics")
                 .queryParam("title", title)
                 .queryParam("author", author)
                 .build().encode().toUri();
         try {
-            return  Optional.ofNullable(serverConnector.getRestTemplate().getForObject(uri, LyricsDto.class)).orElse(new LyricsDto("n/a", "/na","n/a"));
+            return  Optional.ofNullable(serverConnector.getRestTemplate().getForObject(uri, Lyrics.class)).orElse(new Lyrics("n/a", "/na","n/a"));
         }catch(RestClientException e) {
             System.out.println(e.getMessage());
-            return new LyricsDto("n/a", "/na","n/a");
+            return new Lyrics("n/a", "/na","n/a");
         }
     }
 }

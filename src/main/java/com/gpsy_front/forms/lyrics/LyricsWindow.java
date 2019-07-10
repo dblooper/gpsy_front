@@ -5,6 +5,7 @@ import com.gpsy_front.service.RestService;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextArea;
@@ -67,11 +68,10 @@ public class LyricsWindow extends VerticalLayout {
     public void setTrack(MostFrequentTrack mostFrequentTrack) {
         if(mostFrequentTrack != null) {
             this.track = mostFrequentTrack;
-            LyricsDto lyricsDto = restService.getLyrics(mostFrequentTrack.getTitle(), mostFrequentTrack.getAuthors());
-//            LyricsDto lyricsDto = restService.getLyrics("rolling", "adele");
-            textArea.setValue(lyricsDto.getLyrics());
+            Lyrics lyrics = restService.getLyrics(mostFrequentTrack.getTitle(), mostFrequentTrack.getArtists());
+            textArea.setValue(lyrics.getLyrics());
             titleLabel.setText(track.getTitle());
-            authorLabel.setText(track.getAuthors());
+            authorLabel.setText(track.getArtists());
             textArea.setLabel("Title: " + titleLabel.getText() + " | Author: " + authorLabel.getText());
         }else {
             textArea.setLabel("Title: n/a | Author: n/a");
@@ -81,44 +81,47 @@ public class LyricsWindow extends VerticalLayout {
     private void searchTrackByTyping() {
 
         if(!title.getValue().isEmpty() && !author.getValue().isEmpty()
-            && !(title.getValue().length() < 3)
-            && !(author.getValue().length() < 3)) {
+            && (title.getValue().length() > 1)
+            && (author.getValue().length() > 1)) {
 
-            LyricsDto lyricsDto = restService.getLyrics(title.getValue(), author.getValue());
+            Lyrics lyrics = restService.getLyrics(title.getValue(), author.getValue());
             titleLabel.setText(title.getValue());
             authorLabel.setText(author.getValue());
 
-            textArea.setValue(lyricsDto.getLyrics());
+            textArea.setValue(lyrics.getLyrics());
             textArea.setLabel("Title: " + titleLabel.getText() + " | Author: " + authorLabel.getText());
         }
 
         if(title.isEmpty()) {
             title.setInvalid(true);
-            title.setErrorMessage("Missed title");
-        }else if(author.isEmpty()) {
+            Notification.show("Missed title",3000, Notification.Position.TOP_END);
+        }
+        if(author.isEmpty()) {
             author.setInvalid(true);
-            author.setErrorMessage("Missed author");
-        }else if(title.getValue().length() < 3 ) {
+            Notification.show("Missed author",3000, Notification.Position.TOP_END);
+        }
+        if(title.getValue().length() < 2 ) {
             title.setInvalid(true);
-            title.setErrorMessage("Too short");
-        }else if(author.getValue().length() < 3) {
+           Notification.show("Title is too short, at least 2 characters required", 3000, Notification.Position.TOP_END);
+        }
+        if(author.getValue().length() < 2) {
             author.setInvalid(true);
-            author.setErrorMessage("Too short");
+            Notification.show("Author is short, at least 2 characters required", 3000, Notification.Position.TOP_END);
         }
     }
 
-    public LyricsDto getCurrentLyrics() {
+    public Lyrics getCurrentLyrics() {
         if(textArea.getValue().length() > 0) {
-            return new LyricsDto(titleLabel.getText(), authorLabel.getText(), textArea.getValue());
+            return new Lyrics(titleLabel.getText(), authorLabel.getText(), textArea.getValue());
         }
-        return new LyricsDto("n/a", "n/a", "n/a");
+        return new Lyrics("n/a", "n/a", "n/a");
     }
 
-    public void setLyrics(LyricsDto lyricsDto) {
-        if(lyricsDto != null) {
-            textArea.setValue(lyricsDto.getLyrics());
-            titleLabel.setText(lyricsDto.getTitle());
-            authorLabel.setText(lyricsDto.getArtist());
+    public void setLyrics(Lyrics lyrics) {
+        if(lyrics != null) {
+            textArea.setValue(lyrics.getLyrics());
+            titleLabel.setText(lyrics.getTitle());
+            authorLabel.setText(lyrics.getArtists());
             textArea.setLabel("Title: " + titleLabel.getText() + " | Author: " + authorLabel.getText());
         }else {
             textArea.setLabel("Title: n/a | Author: n/a");

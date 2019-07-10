@@ -10,13 +10,13 @@ import org.springframework.stereotype.Component;
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
-public class LyricsDto {
+public class Lyrics {
 
     @JsonProperty(value = "title")
     private String title;
 
-    @JsonProperty(value = "artist")
-    private String artist;
+    @JsonProperty(value = "artists")
+    private String artists;
 
     @JsonProperty(value = "lyrics")
     private String lyrics;

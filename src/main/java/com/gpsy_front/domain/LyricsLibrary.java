@@ -26,10 +26,10 @@ public class LyricsLibrary {
     private String libraryName;
 
     @JsonProperty(value = "lyrics")
-    private List<LyricsDto> lyrics = new ArrayList<>();
+    private List<Lyrics> lyrics = new ArrayList<>();
 
 
-    public LyricsLibrary(String libraryName, List<LyricsDto> lyrics) {
+    public LyricsLibrary(String libraryName, List<Lyrics> lyrics) {
         this.libraryName = libraryName;
         this.lyrics = lyrics;
     }

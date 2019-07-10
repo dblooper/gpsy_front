@@ -1,5 +1,6 @@
 package com.gpsy_front.domain;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonUnwrapped;
 import com.vaadin.flow.i18n.I18NProvider;
 import lombok.AllArgsConstructor;
@@ -17,13 +18,17 @@ import java.util.*;
 @Setter
 public class Playlist {
 
+    @JsonProperty("name")
     private String name;
 
+    @JsonProperty("playlistStringId")
     private String playlistStringId;
 
     @JsonUnwrapped
+    @JsonProperty("tracks")
     private List<PlaylistTrack> tracks;
 
+    @JsonProperty("quantityOfTracks")
     private int quantityOfTracks;
 
     public Playlist(String name, String playlistStringId, List<PlaylistTrack> tracks) {

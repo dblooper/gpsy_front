@@ -6,6 +6,7 @@ import com.gpsy_front.service.RestService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.grid.Grid;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
@@ -31,7 +32,7 @@ public class PlaylistTrackForm extends VerticalLayout {
     public PlaylistTrackForm(PlaylistFormTopLayout playlistFormTopLayout) {
         this.playlistFormTopLayout = playlistFormTopLayout;
 
-        playlistTrackGrid.setColumns("title", "authors");
+        playlistTrackGrid.setColumns("title", "artists");
         playlistTrackGrid.setSelectionMode(Grid.SelectionMode.MULTI);
         playlistTrackGrid.setItems(tracks);
         updateNameArea.add(name, updateNameButton);
@@ -79,6 +80,7 @@ public class PlaylistTrackForm extends VerticalLayout {
         Playlist playlist = playlistFormTopLayout.getCurrentPlaylist();
         restService.updatePlaylistDetails(new Playlist(name.getValue(), playlist.getPlaylistStringId(), playlist.getTracks()));
         playlistFormTopLayout.updateInformation(playlist.getName() + " has been updated!");
+        Notification.show(playlist.getName() + " has been updated!");
     }
 
     public void deleteTrack() {
@@ -86,5 +88,6 @@ public class PlaylistTrackForm extends VerticalLayout {
         Playlist playlistToUpdate = playlistFormTopLayout.getCurrentPlaylist();
         restService.deleteTrackFromPlaylist(new Playlist(playlistToUpdate.getName(), playlistToUpdate.getPlaylistStringId(), new ArrayList<>(trackToDelete)));
         playlistFormTopLayout.updateInformation("Deleted: " + playlistTrackGrid.asMultiSelect().getSelectedItems().toString());
+        Notification.show("Deleted: " + playlistTrackGrid.asMultiSelect().getSelectedItems().toString());
     }
 }

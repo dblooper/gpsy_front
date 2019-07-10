@@ -4,7 +4,6 @@ import com.gpsy_front.domain.ParentTrack;
 import com.gpsy_front.domain.Playlist;
 import com.gpsy_front.domain.RecommendedTrack;
 import com.gpsy_front.forms.ParentForm;
-import com.gpsy_front.forms.playlist.PlaylistChoseForm;
 import com.gpsy_front.service.RestService;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
@@ -25,7 +24,7 @@ public class RecommendedTrackForm extends VerticalLayout implements ParentForm {
     private PlaylistChoseForm playlistChoseForm;
     private VerticalLayout verticalLayout = new VerticalLayout();
     private HorizontalLayout horizontalLayout = new HorizontalLayout();
-    private Grid<RecommendedTrack> recentTracksGrid = new Grid<>(RecommendedTrack.class);
+    private Grid<RecommendedTrack> recommendedTracksGrid = new Grid<>(RecommendedTrack.class);
     private Text textField = new Text("No track chosen");
     private Label gridLabel = new Label("Recommended Tracks");
     private Button refreshButton = new Button("Refresh");
@@ -38,40 +37,42 @@ public class RecommendedTrackForm extends VerticalLayout implements ParentForm {
         horizontalLayout.add(gridLabel, refreshButton);
         horizontalLayout.setAlignItems(Alignment.CENTER);
         horizontalLayout.setSizeFull();
-        recentTracksGrid.setColumns("title", "authors");
-        recentTracksGrid.addComponentColumn(track -> {
+        recommendedTracksGrid.setColumns("title", "artists");
+        recommendedTracksGrid.addComponentColumn(track -> {
                     if(track.getSample() != null) {
                         Anchor anchor = new Anchor(track.getSample(), "Click");
                         anchor.setTarget("tab");
                         return anchor;
                     } else {
-                        Anchor anchor = new Anchor("https://www.youtube.com/results?search_query=" + track.getTitle()+ " " + track.getAuthors(), "Search on YT");
+                        Anchor anchor = new Anchor("https://www.youtube.com/results?search_query=" + track.getTitle()+ " " + track.getArtists(), "Search on YT");
                         anchor.setTarget("tab");
                         return anchor;
                     }
         }).setHeader("Try it out");
-        recentTracksGrid.setSelectionMode(Grid.SelectionMode.MULTI);
 
-        recentTracksGrid.asMultiSelect().addValueChangeListener(event -> {
-            textField.setText(("Total selected: " + recentTracksGrid.getSelectedItems().size()));
+        recommendedTracksGrid.setSelectionMode(Grid.SelectionMode.MULTI);
+
+        recommendedTracksGrid.asMultiSelect().addValueChangeListener(event -> {
+            textField.setText(("Total selected: " + recommendedTracksGrid.getSelectedItems().size()));
             setVisiblePlaylistForm();
         });
-        recentTracksGrid.setItems(restService.getRecommendedTrcksFromApi());
+        recommendedTracksGrid.setItems(restService.getRecommendedTrcksFromApi());
 
         refreshButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         refreshButton.addClickListener(event ->
-            recentTracksGrid.setItems(restService.getRecommendedTrcksFromApi()));
+            recommendedTracksGrid.setItems(restService.getRecommendedTrcksFromApi()));
 
         playlistChoseForm.setVisible(false);
-        verticalLayout.add(horizontalLayout, recentTracksGrid, textField, playlistChoseForm);
+        verticalLayout.add(horizontalLayout, recommendedTracksGrid, textField, playlistChoseForm);
         verticalLayout.addClassName("forms-style");
         verticalLayout.setSizeFull();
         add(verticalLayout);
         setSizeFull();
+        recommendedTracksGrid.setHeightByRows(true);
     }
 
     private void setVisiblePlaylistForm() {
-        if(recentTracksGrid.asMultiSelect().getSelectedItems().size() == 0) {
+        if(recommendedTracksGrid.asMultiSelect().getSelectedItems().size() == 0) {
             playlistChoseForm.setVisible(false);
         } else {
             playlistChoseForm.setVisible(true);
@@ -80,11 +81,11 @@ public class RecommendedTrackForm extends VerticalLayout implements ParentForm {
 
     @Override
     public Grid<?> getGrid() {
-        return this.recentTracksGrid;
+        return this.recommendedTracksGrid;
     }
 
     public void saveAllToSpotify() {
-        Set<ParentTrack> parentTracks = recentTracksGrid.asMultiSelect().getSelectedItems().stream()
+        Set<ParentTrack> parentTracks = recommendedTracksGrid.asMultiSelect().getSelectedItems().stream()
                 .map(track -> (ParentTrack)track)
                 .collect(Collectors.toSet());
         restService.updatePlaylistWithPopularTrack(playlistChoseForm.getCurrentPlaylist(), parentTracks);

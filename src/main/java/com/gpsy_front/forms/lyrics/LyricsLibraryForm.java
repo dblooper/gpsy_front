@@ -6,6 +6,7 @@ import com.gpsy_front.service.RestService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Label;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
@@ -25,7 +26,6 @@ public class LyricsLibraryForm extends VerticalLayout {
     private Label mainLabel = new Label("Lyrics Library");
 
     public LyricsLibraryForm(LyricsWindow lyricsWindow) {
-//        this.lyricsWindow = lyricsWindow;
         this.lyricsInLibraryForm = new LyricsInLibraryForm(lyricsWindow, this);
 
         mainLabel.setClassName("grid-title");
@@ -54,8 +54,10 @@ public class LyricsLibraryForm extends VerticalLayout {
     }
 
     private void addLibrary() {
-        lyricsService.createLibrary(new LyricsLibrary(libraryName.getValue(), new ArrayList<>()));
+        String newLibraryName = libraryName.getValue();
+        lyricsService.createLibrary(new LyricsLibrary(newLibraryName, new ArrayList<>()));
         refresh();
+        Notification.show("New library: " + newLibraryName + " has been created");
     }
 
     public void refresh() {

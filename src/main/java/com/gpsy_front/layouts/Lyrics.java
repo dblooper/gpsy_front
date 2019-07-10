@@ -15,6 +15,7 @@ public class Lyrics extends Div implements RouterLayout {
     public Lyrics() {
         verticalLayout.add(lyricsAndLibraryTopLayout);
         add(verticalLayout);
+        setClassName("main-frame");
     }
 }
 

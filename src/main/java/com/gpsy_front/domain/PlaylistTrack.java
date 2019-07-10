@@ -5,41 +5,35 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
-
-import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
-import java.util.List;
 
 @Component
 @NoArgsConstructor
 @Getter
 @Setter
-//@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class PlaylistTrack {
 
-//    @JsonProperty("trackStringId")
+    @JsonProperty("trackStringId")
     private String trackStringId;
 
-//    @JsonProperty("title")
+    @JsonProperty("title")
     private String title;
 
-//    @JsonProperty("authors")
-    private String authors;
+    @JsonProperty("artists")
+    private String artists;
 
-    public PlaylistTrack(String trackStringId, String title, String authors) {
+    public PlaylistTrack(String trackStringId, String title, String artists) {
         this.trackStringId = trackStringId;
         this.title = title;
-        this.authors = authors;
+        this.artists = artists;
     }
 
     @Override
     public String toString() {
-        return "Track{" +
+        return "{" +
                 "title='" + title + '\'' +
-                ", authors='" + authors + '\'' +
+                ", artists='" + artists + '\'' +
                 '}';
     }
 }

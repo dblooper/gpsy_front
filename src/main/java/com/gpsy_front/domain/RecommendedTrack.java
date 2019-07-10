@@ -17,14 +17,14 @@ import org.springframework.stereotype.Component;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class RecommendedTrack implements ParentTrack{
 
-    @JsonProperty("stringId")
-    private String trackId;
+    @JsonProperty("trackStringId")
+    private String trackStringId;
 
-    @JsonProperty("titles")
+    @JsonProperty("title")
     private String title;
 
-    @JsonProperty("authors")
-    private String authors;
+    @JsonProperty("artists")
+    private String artists;
 
     @JsonProperty("sample")
     private String sample;

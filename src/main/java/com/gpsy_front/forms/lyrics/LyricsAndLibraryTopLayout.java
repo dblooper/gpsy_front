@@ -22,7 +22,7 @@ public class LyricsAndLibraryTopLayout extends FormLayout {
     public LyricsAndLibraryTopLayout() {
         gridLabel.setClassName("grid-title");
         gridLabel.setSizeFull();
-        userPopularTrack.setColumns("title", "authors", "popularity");
+        userPopularTrack.setColumns("title", "artists", "popularity");
         userPopularTrack.setSelectionMode(Grid.SelectionMode.SINGLE);
         popularTracksLayout.add(gridLabel, userPopularTrack, textField);
         verticalLayout.add(lyricsLibraryForm, popularTracksLayout);
@@ -35,5 +35,7 @@ public class LyricsAndLibraryTopLayout extends FormLayout {
         userPopularTrack.asSingleSelect().addValueChangeListener(event -> lyricsWindow.setTrack(userPopularTrack.asSingleSelect().getValue()));
 
         add(verticalLayout, lyricsWindow);
+        verticalLayout.setPadding(false);
+        setSizeFull();
     }
 }

@@ -4,10 +4,8 @@ import com.gpsy_front.domain.ParentTrack;
 import com.gpsy_front.domain.Playlist;
 import com.gpsy_front.domain.RecentTrack;
 import com.gpsy_front.forms.ParentForm;
-import com.gpsy_front.forms.playlist.PlaylistChoseForm;
 import com.gpsy_front.service.RestService;
 import com.vaadin.flow.component.Text;
-import com.vaadin.flow.component.formlayout.FormLayout;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -30,7 +28,7 @@ public class RecentTrackForm extends VerticalLayout implements ParentForm {
             this.playlistChoseForm = new PlaylistChoseForm(this, playlists);
             gridLabel.setClassName("grid-title");
             gridLabel.setSizeFull();
-            recentTracksGrid.setColumns("title", "authors", "playDate");
+            recentTracksGrid.setColumns("title", "artists", "playDate");
             recentTracksGrid.setSelectionMode(Grid.SelectionMode.MULTI);
 
             recentTracksGrid.asMultiSelect().addValueChangeListener(event -> {
@@ -45,7 +43,7 @@ public class RecentTrackForm extends VerticalLayout implements ParentForm {
             verticalLayout.setSizeFull();
             add(verticalLayout);
             setSizeFull();
-
+            recentTracksGrid.setHeightByRows(true);
         }
 
         private void setVisiblePlaylistForm() {

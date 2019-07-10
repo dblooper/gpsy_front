@@ -1,5 +1,7 @@
 package com.gpsy_front.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -11,13 +13,18 @@ import org.springframework.stereotype.Component;
 @AllArgsConstructor
 @Getter
 @Setter
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class MostFrequentTrack implements ParentTrack {
 
-    private String trackId;
+    @JsonProperty(value = "trackStringId")
+    private String trackStringId;
 
+    @JsonProperty(value = "title")
     private String title;
 
-    private String authors;
+    @JsonProperty(value = "artists")
+    private String artists;
 
+    @JsonProperty(value = "popularity")
     private Integer popularity;
 }

@@ -59,3 +59,7 @@ vaadin-grid-cell-content {
 .horizontalLayoutAlignment {
     align-items: center;
 }
+
+.main-frame {
+    padding: 0% 2%;
+}

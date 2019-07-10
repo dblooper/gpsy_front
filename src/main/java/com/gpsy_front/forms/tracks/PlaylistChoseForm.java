@@ -1,4 +1,4 @@
-package com.gpsy_front.forms.playlist;
+package com.gpsy_front.forms.tracks;
 
 import com.gpsy_front.domain.Playlist;
 import com.gpsy_front.forms.ParentForm;
@@ -7,6 +7,7 @@ import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
 import com.vaadin.flow.component.formlayout.FormLayout;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 
 import java.util.List;
@@ -45,14 +46,15 @@ public class PlaylistChoseForm extends FormLayout {
         if(parentForm.getGrid().asMultiSelect().getSelectedItems().size() == 0 || playlist == null) {
             outputText = "Nothing saved, no selected items";
         }else {
-            parentForm.saveAllToSpotify();
             stringBuilder.append(parentForm.getGrid().asMultiSelect().getSelectedItems().size())
-                    .append(" trackst to playlist: ")
+                    .append(" tracks to playlist: ")
                     .append(playlist.getName());
-            parentForm.getGrid().asMultiSelect().deselectAll();
+//            parentForm.getGrid().asMultiSelect().deselectAll();
             outputText = stringBuilder.toString();
         }
+        parentForm.saveAllToSpotify();
         parentForm.getInformationText().setText(outputText);
+        Notification.show(outputText);
     }
 
 }

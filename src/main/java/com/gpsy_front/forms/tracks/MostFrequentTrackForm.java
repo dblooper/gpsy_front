@@ -4,7 +4,6 @@ import com.gpsy_front.domain.ParentTrack;
 import com.gpsy_front.domain.Playlist;
 import com.gpsy_front.domain.MostFrequentTrack;
 import com.gpsy_front.forms.ParentForm;
-import com.gpsy_front.forms.playlist.PlaylistChoseForm;
 import com.gpsy_front.service.RestService;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.grid.Grid;
@@ -30,7 +29,7 @@ public class MostFrequentTrackForm extends VerticalLayout implements ParentForm 
         gridLabel.setClassName("grid-title");
         gridLabel.setSizeFull();
 
-        recentTracksGrid.setColumns("title", "authors", "popularity");
+        recentTracksGrid.setColumns("title", "artists", "popularity");
         recentTracksGrid.setSelectionMode(Grid.SelectionMode.MULTI);
 
         recentTracksGrid.asMultiSelect().addValueChangeListener(event -> {
@@ -45,6 +44,7 @@ public class MostFrequentTrackForm extends VerticalLayout implements ParentForm 
         verticalLayout.setSizeFull();
         add(verticalLayout);
         setSizeFull();
+        recentTracksGrid.setHeightByRows(true);
 
     }
 

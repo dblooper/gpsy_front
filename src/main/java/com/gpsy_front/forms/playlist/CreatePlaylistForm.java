@@ -5,6 +5,7 @@ import com.gpsy_front.service.RestService;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
+import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.TextField;
 
@@ -26,8 +27,10 @@ public class CreatePlaylistForm extends VerticalLayout {
         textField.setPlaceholder("Name of playlist");
 
         button.addClickListener(event -> {
-            restService.createNewPlaylist(new Playlist(textField.getValue(), "", new ArrayList<>()));
+            String newPlaylistName = textField.getValue();
+            restService.createNewPlaylist(new Playlist(newPlaylistName, "", new ArrayList<>()));
             playlistFormTopLayout.refresh();
+            Notification.show("A new playlist: " + newPlaylistName + " has been created on your Spotify account!");
         });
         button.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
 
