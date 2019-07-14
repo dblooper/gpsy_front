@@ -11,7 +11,6 @@ import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.component.textfield.NumberField;
-import com.vaadin.flow.data.binder.Binder;
 
 public class PlaylistGeneratorOutput extends VerticalLayout {
 
@@ -66,14 +65,16 @@ public class PlaylistGeneratorOutput extends VerticalLayout {
     }
 
     private void updateAndRefresh(int value) {
-        RecommendedPlaylist recommendedPlaylist = restService.changeQuantityOfRecommendedTracks(value);
+        restService.changeQuantityOfRecommendedTracks(value);
+        RecommendedPlaylist recommendedPlaylist = restService.getRecommendedPlaylist();
         playlistTrackGrid.setItems(recommendedPlaylist.getPlaylistTracks());
         gridLabel.setText("Forecast for: " + recommendedPlaylist.getName() + " | Total: " + recommendedPlaylist.getNumberOfTracks());
         updateButton.setVisible(false);
     }
 
     private void generateNewSetOfTracks(int value) {
-        RecommendedPlaylist recommendedPlaylist = restService.updateFetchRecommendedPlaylist(value);
+        restService.updateFetchRecommendedPlaylist(value);
+        RecommendedPlaylist recommendedPlaylist = restService.getRecommendedPlaylist();
         playlistTrackGrid.setItems(recommendedPlaylist.getPlaylistTracks());
         gridLabel.setText("Forecast for: " + recommendedPlaylist.getName() + " | Total: " + recommendedPlaylist.getNumberOfTracks());
     }

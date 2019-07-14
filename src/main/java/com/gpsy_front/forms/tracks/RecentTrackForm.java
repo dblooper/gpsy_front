@@ -32,7 +32,9 @@ public class RecentTrackForm extends VerticalLayout implements ParentForm {
             recentTracksGrid.setSelectionMode(Grid.SelectionMode.MULTI);
 
             recentTracksGrid.asMultiSelect().addValueChangeListener(event -> {
-                textField.setText(("Total selected: " + recentTracksGrid.getSelectedItems().size()));
+                if(!textField.getText().contains("Saved")) {
+                    textField.setText(("Total selected: " + recentTracksGrid.getSelectedItems().size()));
+                }
                 setVisiblePlaylistForm();
             });
             recentTracksGrid.setItems(restService.getRecentTracksFromApi());
@@ -43,7 +45,7 @@ public class RecentTrackForm extends VerticalLayout implements ParentForm {
             verticalLayout.setSizeFull();
             add(verticalLayout);
             setSizeFull();
-            recentTracksGrid.setHeightByRows(true);
+//            recentTracksGrid.setHeightByRows(true);
         }
 
         private void setVisiblePlaylistForm() {
@@ -51,6 +53,7 @@ public class RecentTrackForm extends VerticalLayout implements ParentForm {
                 playlistChoseForm.setVisible(false);
             } else {
                 playlistChoseForm.setVisible(true);
+                textField.setText(("Total selected: " + recentTracksGrid.getSelectedItems().size()));
             }
         }
 

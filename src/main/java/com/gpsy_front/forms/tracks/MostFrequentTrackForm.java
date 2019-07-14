@@ -33,7 +33,9 @@ public class MostFrequentTrackForm extends VerticalLayout implements ParentForm 
         recentTracksGrid.setSelectionMode(Grid.SelectionMode.MULTI);
 
         recentTracksGrid.asMultiSelect().addValueChangeListener(event -> {
-            textField.setText(("Total selected: " + recentTracksGrid.getSelectedItems().size()));
+            if(!textField.getText().contains("Saved")) {
+                textField.setText(("Total selected: " + recentTracksGrid.getSelectedItems().size()));
+            }
             setVisiblePlaylistForm();
         });
         recentTracksGrid.setItems(restService.getFrequentTracksFromApi());
@@ -57,6 +59,7 @@ public class MostFrequentTrackForm extends VerticalLayout implements ParentForm 
             playlistChoseForm.setVisible(false);
         } else {
             playlistChoseForm.setVisible(true);
+            textField.setText(("Total selected: " + recentTracksGrid.getSelectedItems().size()));
         }
     }
 

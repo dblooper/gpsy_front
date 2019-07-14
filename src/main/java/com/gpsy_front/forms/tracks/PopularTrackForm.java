@@ -33,7 +33,9 @@ public class PopularTrackForm extends VerticalLayout implements ParentForm {
         popularTracksGrid.setSelectionMode(Grid.SelectionMode.MULTI);
 
         popularTracksGrid.asMultiSelect().addValueChangeListener(event -> {
-            textField.setText(("Total selected: " + popularTracksGrid.getSelectedItems().size()));
+            if(!textField.getText().contains("Saved")) {
+                textField.setText(("Total selected: " + popularTracksGrid.getSelectedItems().size()));
+            }
             setVisiblePlaylistForm();
         });
         popularTracksGrid.setItems(restService.getPopularTracks());
@@ -52,6 +54,7 @@ public class PopularTrackForm extends VerticalLayout implements ParentForm {
             playlistChoseForm.setVisible(false);
         } else {
             playlistChoseForm.setVisible(true);
+            textField.setText(("Total selected: " + popularTracksGrid.getSelectedItems().size()));
         }
     }
 

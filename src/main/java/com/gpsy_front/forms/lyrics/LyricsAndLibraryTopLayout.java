@@ -1,6 +1,7 @@
 package com.gpsy_front.forms.lyrics;
 
 import com.gpsy_front.domain.MostFrequentTrack;
+import com.gpsy_front.domain.RecentTrack;
 import com.gpsy_front.service.RestService;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.formlayout.FormLayout;
@@ -12,9 +13,9 @@ public class LyricsAndLibraryTopLayout extends FormLayout {
 
     private VerticalLayout verticalLayout = new VerticalLayout();
     private VerticalLayout popularTracksLayout = new VerticalLayout();
-    private Grid<MostFrequentTrack> userPopularTrack = new Grid<>(MostFrequentTrack.class);
+    private Grid<RecentTrack> userRecentTrack = new Grid<>(RecentTrack.class);
     private Text textField = new Text("No track choosen");
-    private Label gridLabel = new Label("Most frequent songs");
+    private Label gridLabel = new Label("Most recent songs");
     private RestService restService = RestService.getInstance();
     private LyricsWindow lyricsWindow = new LyricsWindow(this);
     private LyricsLibraryForm lyricsLibraryForm = new LyricsLibraryForm(lyricsWindow);
@@ -22,17 +23,17 @@ public class LyricsAndLibraryTopLayout extends FormLayout {
     public LyricsAndLibraryTopLayout() {
         gridLabel.setClassName("grid-title");
         gridLabel.setSizeFull();
-        userPopularTrack.setColumns("title", "artists", "popularity");
-        userPopularTrack.setSelectionMode(Grid.SelectionMode.SINGLE);
-        popularTracksLayout.add(gridLabel, userPopularTrack, textField);
+        userRecentTrack.setColumns("title", "artists", "playDate");
+        userRecentTrack.setSelectionMode(Grid.SelectionMode.SINGLE);
+        popularTracksLayout.add(gridLabel, userRecentTrack, textField);
         verticalLayout.add(lyricsLibraryForm, popularTracksLayout);
 
         lyricsLibraryForm.addClassName("forms-style");
         popularTracksLayout.addClassName("forms-style");
         verticalLayout.setSizeFull();
-        userPopularTrack.setItems(restService.getFrequentTracksFromApi());
+        userRecentTrack.setItems(restService.getRecentTracksFromApi());
 
-        userPopularTrack.asSingleSelect().addValueChangeListener(event -> lyricsWindow.setTrack(userPopularTrack.asSingleSelect().getValue()));
+        userRecentTrack.asSingleSelect().addValueChangeListener(event -> lyricsWindow.setTrack(userRecentTrack.asSingleSelect().getValue()));
 
         add(verticalLayout, lyricsWindow);
         verticalLayout.setPadding(false);

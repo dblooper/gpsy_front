@@ -53,7 +53,9 @@ public class RecommendedTrackForm extends VerticalLayout implements ParentForm {
         recommendedTracksGrid.setSelectionMode(Grid.SelectionMode.MULTI);
 
         recommendedTracksGrid.asMultiSelect().addValueChangeListener(event -> {
-            textField.setText(("Total selected: " + recommendedTracksGrid.getSelectedItems().size()));
+            if(!textField.getText().contains("Saved")) {
+                textField.setText(("Total selected: " + recommendedTracksGrid.getSelectedItems().size()));
+            }
             setVisiblePlaylistForm();
         });
         recommendedTracksGrid.setItems(restService.getRecommendedTrcksFromApi());
@@ -76,6 +78,7 @@ public class RecommendedTrackForm extends VerticalLayout implements ParentForm {
             playlistChoseForm.setVisible(false);
         } else {
             playlistChoseForm.setVisible(true);
+            textField.setText(("Total selected: " + recommendedTracksGrid.getSelectedItems().size()));
         }
     }
 

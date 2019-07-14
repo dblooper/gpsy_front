@@ -2,7 +2,6 @@ package com.gpsy_front.layouts;
 
 import com.gpsy_front.domain.Playlist;
 import com.gpsy_front.forms.tracks.*;
-import com.gpsy_front.service.LyricsService;
 import com.gpsy_front.service.RestService;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -11,7 +10,7 @@ import com.vaadin.flow.router.Route;
 
 import java.util.List;
 
-@Route(value = "tracks", layout = MainViewWithMainBar.class)
+@Route(value = "tracks", layout = MainNavigationBar.class)
 public class Tracks extends Div {
 
     private VerticalLayout verticalLayout1 = new VerticalLayout();

@@ -140,27 +140,25 @@ public final class RestService {
         }
     }
 
-    public RecommendedPlaylist updateFetchRecommendedPlaylist(int quantityOfTracksForPlaylist) {
+    public void updateFetchRecommendedPlaylist(int quantityOfTracksForPlaylist) {
         URI uri = UriComponentsBuilder.fromHttpUrl(GPSY_API_ROOT + "/playlists/recommended/new")
                 .queryParam("qty", quantityOfTracksForPlaylist)
                 .build().encode().toUri();
         try {
-            return  Optional.ofNullable(serverConnector.getRestTemplate().getForObject(uri, RecommendedPlaylist.class)).orElse(new RecommendedPlaylist());
+            serverConnector.getRestTemplate().put(uri, RecommendedPlaylist.class);
         }catch(RestClientException e) {
             System.out.println(e.getMessage());
-            return new RecommendedPlaylist();
         }
     }
 
-    public RecommendedPlaylist changeQuantityOfRecommendedTracks(int quantityOfTracksForPlaylist) {
+    public void changeQuantityOfRecommendedTracks(int quantityOfTracksForPlaylist) {
         URI uri = UriComponentsBuilder.fromHttpUrl(GPSY_API_ROOT + "/playlists/recommended/change")
                 .queryParam("qty", quantityOfTracksForPlaylist)
                 .build().encode().toUri();
         try {
-            return  Optional.ofNullable(serverConnector.getRestTemplate().getForObject(uri, RecommendedPlaylist.class)).orElse(new RecommendedPlaylist());
+            serverConnector.getRestTemplate().put(uri, RecommendedPlaylist.class);
         }catch(RestClientException e) {
             System.out.println(e.getMessage());
-            return new RecommendedPlaylist();
         }
     }
 

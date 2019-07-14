@@ -11,7 +11,7 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.router.*;
 
 @StyleSheet("frontend://style.css")
-public class MainViewWithMainBar extends Div implements RouterLayout {
+public class MainNavigationBar extends Div implements RouterLayout {
 
     private HorizontalLayout mainHorizontalLayout = new HorizontalLayout();
     private HorizontalLayout logo = new HorizontalLayout();
@@ -19,7 +19,7 @@ public class MainViewWithMainBar extends Div implements RouterLayout {
     private HorizontalLayout aboutMe = new HorizontalLayout();
 
 
-    public MainViewWithMainBar() {
+    public MainNavigationBar() {
 
         addMenuElement(MainView.class, "GPSY", new Icon(VaadinIcon.HEADPHONES),logo, "logo");
         addMenuElement(Playlists.class, "Playlists", new Icon(VaadinIcon.INDENT), horizontalLayout, "router-link");

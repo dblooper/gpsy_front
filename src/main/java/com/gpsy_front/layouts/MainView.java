@@ -4,7 +4,7 @@ import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
 
-@Route(value = "gpsy", layout = MainViewWithMainBar.class)
+@Route(value = "gpsy", layout = MainNavigationBar.class)
 public class MainView extends VerticalLayout {
 
     MainView() {

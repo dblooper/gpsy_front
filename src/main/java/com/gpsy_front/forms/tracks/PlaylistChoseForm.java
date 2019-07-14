@@ -17,7 +17,6 @@ public class PlaylistChoseForm extends FormLayout {
     private VerticalLayout verticalLayout = new VerticalLayout();
     private Button acceptButton = new Button("Save");
     private ComboBox<Playlist> playlistSelect = new ComboBox<>("Playlist");
-    private RestService restService = RestService.getInstance();
 
     public PlaylistChoseForm(ParentForm parentForm, List<Playlist> playlists) {
         this.parentForm = parentForm;
@@ -25,7 +24,7 @@ public class PlaylistChoseForm extends FormLayout {
         playlistSelect.setItems(playlists);
         playlistSelect.setItemLabelGenerator(Playlist::getName);
         playlistSelect.setPlaceholder("Choose the playlist");
-        playlistSelect.setItems(restService.getPlaylistsFromApi());
+        playlistSelect.setItems(playlists);
 
         acceptButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         acceptButton.addClickListener(event -> save(playlistSelect.getValue()));
@@ -49,12 +48,12 @@ public class PlaylistChoseForm extends FormLayout {
             stringBuilder.append(parentForm.getGrid().asMultiSelect().getSelectedItems().size())
                     .append(" tracks to playlist: ")
                     .append(playlist.getName());
-//            parentForm.getGrid().asMultiSelect().deselectAll();
             outputText = stringBuilder.toString();
         }
         parentForm.saveAllToSpotify();
         parentForm.getInformationText().setText(outputText);
         Notification.show(outputText);
+        parentForm.getGrid().asMultiSelect().deselectAll();
     }
 
 }

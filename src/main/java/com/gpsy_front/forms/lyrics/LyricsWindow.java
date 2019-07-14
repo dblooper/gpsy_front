@@ -18,7 +18,7 @@ public class LyricsWindow extends VerticalLayout {
     private VerticalLayout mainContent = new VerticalLayout();
     private VerticalLayout searchLayoutWithLabel = new VerticalLayout();
     private HorizontalLayout searchForm = new HorizontalLayout();
-    private MostFrequentTrack track;
+    private RecentTrack track;
     private LyricsAndLibraryTopLayout lyricsAndLibraryTopLayout;
     private TextField title = new TextField("Title:");
     private TextField author = new TextField("Author:");
@@ -32,7 +32,7 @@ public class LyricsWindow extends VerticalLayout {
 
     public LyricsWindow(LyricsAndLibraryTopLayout lyricsAndLibraryTopLayout) {
         this.lyricsAndLibraryTopLayout = lyricsAndLibraryTopLayout;
-        this.track = new MostFrequentTrack("n/a", "n/a", "n/a", 0);
+        this.track = new RecentTrack("n/a", "n/a", "n/a", "n/a");
         this.textArea = new TextArea("Waiting for track to search lyrics");
         title.setPlaceholder("Type title");
         author.setPlaceholder("Type author");
@@ -65,10 +65,10 @@ public class LyricsWindow extends VerticalLayout {
         setWidth("70%");
     }
 
-    public void setTrack(MostFrequentTrack mostFrequentTrack) {
-        if(mostFrequentTrack != null) {
-            this.track = mostFrequentTrack;
-            Lyrics lyrics = restService.getLyrics(mostFrequentTrack.getTitle(), mostFrequentTrack.getArtists());
+    public void setTrack(RecentTrack recentTrack) {
+        if(recentTrack != null) {
+            this.track = recentTrack;
+            Lyrics lyrics = restService.getLyrics(recentTrack.getTitle(), recentTrack.getArtists());
             textArea.setValue(lyrics.getLyrics());
             titleLabel.setText(track.getTitle());
             authorLabel.setText(track.getArtists());
