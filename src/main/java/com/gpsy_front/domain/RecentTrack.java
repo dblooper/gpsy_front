@@ -23,7 +23,7 @@ public class RecentTrack implements ParentTrack {
     @JsonProperty(value = "title")
     private String title;
 
-    @JsonProperty(value = "aritsts")
+    @JsonProperty(value = "artists")
     private String artists;
 
     @JsonProperty(value = "playDate")

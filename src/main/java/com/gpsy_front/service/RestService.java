@@ -27,7 +27,8 @@ public final class RestService {
     }
 
     public List<PopularTrack> getPopularTracks() {
-        URI uri = UriComponentsBuilder.fromHttpUrl(GPSY_API_ROOT + "/tracks/spotify/popular").build().encode().toUri();
+        URI uri = UriComponentsBuilder.fromHttpUrl(GPSY_API_ROOT + "/tracks/spotify/popular")
+                .queryParam("qty", InitialLimitValues.LIMIT_POPULAR_TRACKS).build().encode().toUri();
         try {
             PopularTrack[] mostFrequentTracks = serverConnector.getRestTemplate().getForObject(uri, PopularTrack[].class);
             System.out.println(mostFrequentTracks[0]);
@@ -54,7 +55,8 @@ public final class RestService {
     }
 
     public List<RecentTrack> getRecentTracksFromApi() {
-        URI uri = UriComponentsBuilder.fromHttpUrl(GPSY_API_ROOT + "/tracks/recent").build().encode().toUri();
+        URI uri = UriComponentsBuilder.fromHttpUrl(GPSY_API_ROOT + "/tracks/recent")
+                .queryParam("qty", InitialLimitValues.LIMIT_RECENT_TRACKS).build().encode().toUri();
         try {
             RecentTrack[] recentTracks = serverConnector.getRestTemplate().getForObject(uri, RecentTrack[].class);
             return Optional.ofNullable(recentTracks).map(Arrays::asList).orElse(new ArrayList<>());
@@ -65,7 +67,8 @@ public final class RestService {
     }
 
     public List<MostFrequentTrack> getFrequentTracksFromApi() {
-        URI uri = UriComponentsBuilder.fromHttpUrl(GPSY_API_ROOT + "/tracks/frequent").build().encode().toUri();
+        URI uri = UriComponentsBuilder.fromHttpUrl(GPSY_API_ROOT + "/tracks/frequent")
+                .queryParam("qty", InitialLimitValues.LIMIT_FREQUENT_TRACKS).build().encode().toUri();
         try {
             MostFrequentTrack[] frequentTracks = serverConnector.getRestTemplate().getForObject(uri, MostFrequentTrack[].class);
             return Optional.ofNullable(frequentTracks).map(Arrays::asList).orElse(new ArrayList<>());
@@ -91,7 +94,8 @@ public final class RestService {
     }
 
     public List<RecommendedTrack> getRecommendedTrcksFromApi() {
-        URI uri = UriComponentsBuilder.fromHttpUrl(GPSY_API_ROOT + "/tracks/recommended").build().encode().toUri();
+        URI uri = UriComponentsBuilder.fromHttpUrl(GPSY_API_ROOT + "/tracks/recommended")
+                .queryParam("qty", InitialLimitValues.LIMIT_RECOMMENDED_TRACKS).build().encode().toUri();
 
         try {
             RecommendedTrack[] recommendedTracks = serverConnector.getRestTemplate().getForObject(uri, RecommendedTrack[].class);
@@ -141,14 +145,10 @@ public final class RestService {
     }
 
     public void updateFetchRecommendedPlaylist(int quantityOfTracksForPlaylist) {
-        URI uri = UriComponentsBuilder.fromHttpUrl(GPSY_API_ROOT + "/playlists/recommended/new")
+        URI uri = UriComponentsBuilder.fromHttpUrl("/playlists/recommended/new")
                 .queryParam("qty", quantityOfTracksForPlaylist)
                 .build().encode().toUri();
-        try {
-            serverConnector.getRestTemplate().put(uri, RecommendedPlaylist.class);
-        }catch(RestClientException e) {
-            System.out.println(e.getMessage());
-        }
+        serverConnector.httpServerRequest(null, uri.getPath(), HttpMethod.POST );
     }
 
     public void changeQuantityOfRecommendedTracks(int quantityOfTracksForPlaylist) {
