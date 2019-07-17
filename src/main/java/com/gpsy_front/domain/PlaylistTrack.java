@@ -31,9 +31,6 @@ public class PlaylistTrack {
 
     @Override
     public String toString() {
-        return "{" +
-                "title='" + title + '\'' +
-                ", artists='" + artists + '\'' +
-                '}';
+        return title + ", " + artists;
     }
 }

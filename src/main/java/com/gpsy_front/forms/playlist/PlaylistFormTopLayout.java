@@ -1,7 +1,7 @@
 package com.gpsy_front.forms.playlist;
 
 import com.gpsy_front.domain.Playlist;
-import com.gpsy_front.service.RestService;
+import com.gpsy_front.service.RestSpotifyService;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Label;
@@ -15,29 +15,24 @@ public class PlaylistFormTopLayout extends VerticalLayout {
     HorizontalLayout theMainContent = new HorizontalLayout();
     private Grid<Playlist> userPlaylistsGrid = new Grid<>(Playlist.class);
     private Text textField = new Text("No playlist chosen");
-    private Label gridLabel = new Label("Playlists on your spotify");
-    private RestService restService = RestService.getInstance();
+    private Label gridLabel = new Label("Playlists on your Spotify");
+    private RestSpotifyService restSpotifyService = RestSpotifyService.getInstance();
     private PlaylistTrackForm playlistTrackForm = new PlaylistTrackForm(this);
     private CreatePlaylistForm createPlaylistForm = new CreatePlaylistForm(this);
 
     public PlaylistFormTopLayout() {
-        gridLabel.setClassName("grid-title");
+
         userPlaylistsGrid.setColumns("name", "quantityOfTracks");
         userPlaylistsGrid.setSelectionMode(Grid.SelectionMode.SINGLE);
 
         playlistContent.add(gridLabel, userPlaylistsGrid, textField);
-        playlistContent.addClassName("forms-style");
 
         theMainContent.add(playlistContent, playlistTrackForm);
 
-        playlistTrackForm.setSizeFull();
-        playlistTrackForm.setMargin(false);
-        theMainContent.setSizeFull();
         playlistTrackForm.setPlaylist(null);
-        userPlaylistsGrid.setItems(restService.getPlaylistsFromApi());
+        userPlaylistsGrid.setItems(restSpotifyService.getPlaylistsFromApi());
 
         verticalLayout.add(theMainContent, createPlaylistForm);
-        verticalLayout.setPadding(false);
 
         userPlaylistsGrid.asSingleSelect().addValueChangeListener(event -> {
             if(userPlaylistsGrid.asSingleSelect().getValue() != null) {
@@ -49,7 +44,16 @@ public class PlaylistFormTopLayout extends VerticalLayout {
         });
 
         add(verticalLayout);
+
         setSizeFull();
+        gridLabel.setClassName("grid-title");
+        gridLabel.setWidthFull();
+        theMainContent.addClassName("forms-style");
+        playlistTrackForm.setSizeFull();
+        playlistTrackForm.setMargin(false);
+        theMainContent.setSizeFull();
+        verticalLayout.setPadding(false);
+
     }
 
     public Playlist getCurrentPlaylist() {
@@ -61,6 +65,6 @@ public class PlaylistFormTopLayout extends VerticalLayout {
     }
 
     public void refresh() {
-        userPlaylistsGrid.setItems(restService.getPlaylistsFromApi());
+        userPlaylistsGrid.setItems(restSpotifyService.getPlaylistsFromApi());
     }
 }

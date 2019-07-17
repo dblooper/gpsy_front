@@ -1,9 +1,10 @@
 package com.gpsy_front.forms.lyrics;
 
 import com.gpsy_front.domain.*;
-import com.gpsy_front.service.RestService;
+import com.gpsy_front.service.RestLyricsService;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -14,7 +15,7 @@ import com.vaadin.flow.component.textfield.TextField;
 
 public class LyricsWindow extends VerticalLayout {
 
-    private RestService restService = RestService.getInstance();
+    private RestLyricsService restLyricsService = RestLyricsService.getInstance();
     private VerticalLayout mainContent = new VerticalLayout();
     private VerticalLayout searchLayoutWithLabel = new VerticalLayout();
     private HorizontalLayout searchForm = new HorizontalLayout();
@@ -31,44 +32,48 @@ public class LyricsWindow extends VerticalLayout {
 
 
     public LyricsWindow(LyricsAndLibraryTopLayout lyricsAndLibraryTopLayout) {
+
         this.lyricsAndLibraryTopLayout = lyricsAndLibraryTopLayout;
         this.track = new RecentTrack("n/a", "n/a", "n/a", "n/a");
         this.textArea = new TextArea("Waiting for track to search lyrics");
+
         title.setPlaceholder("Type title");
         author.setPlaceholder("Type author");
-        searchButton.addClickListener(event -> searchTrackByTyping());
-        searchForm.add(searchLyricsLabel, title, author, searchButton);
-        searchLyricsLabel.setClassName("grid-title");
-        searchLyricsLabel.setSizeFull();
 
-        searchForm.setAlignItems(Alignment.END);
-        searchForm.setPadding(true);
-        searchForm.setMargin(false);
-        searchForm.setWidthFull();
+        searchButton.addClickListener(event -> searchTrackByTyping());
+        searchForm.add(searchLyricsLabel, title, author, searchButton);;
 
         title.setMinLength(3);
         author.setMinLength(4);
 
         searchLayoutWithLabel.add(searchLyricsLabel, searchForm);
-        searchLayoutWithLabel.setClassName("forms-style");
-        searchLayoutWithLabel.setSizeFull();
 
         textArea.setSizeFull();
         mainContent.add(lyriicsTextLabel, textArea);
-        lyriicsTextLabel.setClassName("grid-title");
-        lyriicsTextLabel.setSizeFull();
+
+        add(searchLayoutWithLabel, mainContent);
 
         mainContent.setSizeFull();
         mainContent.addClassName("forms-style");
-        add(searchLayoutWithLabel, mainContent);
+        lyriicsTextLabel.setClassName("grid-title");
+        lyriicsTextLabel.setSizeFull();
+        searchLayoutWithLabel.setClassName("forms-style");
+        searchLayoutWithLabel.setSizeFull();
         setPadding(false);
         setWidth("70%");
+        searchButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        searchForm.setAlignItems(Alignment.END);
+        searchForm.setPadding(true);
+        searchForm.setMargin(false);
+        searchForm.setWidthFull();
+        searchLyricsLabel.setClassName("grid-title");
+        searchLyricsLabel.setSizeFull();
     }
 
     public void setTrack(RecentTrack recentTrack) {
         if(recentTrack != null) {
             this.track = recentTrack;
-            Lyrics lyrics = restService.getLyrics(recentTrack.getTitle(), recentTrack.getArtists());
+            Lyrics lyrics = restLyricsService.getLyrics(recentTrack.getTitle(), recentTrack.getArtists());
             textArea.setValue(lyrics.getLyrics());
             titleLabel.setText(track.getTitle());
             authorLabel.setText(track.getArtists());
@@ -84,12 +89,14 @@ public class LyricsWindow extends VerticalLayout {
             && (title.getValue().length() > 1)
             && (author.getValue().length() > 1)) {
 
-            Lyrics lyrics = restService.getLyrics(title.getValue(), author.getValue());
+            Lyrics lyrics = restLyricsService.getLyrics(title.getValue(), author.getValue());
             titleLabel.setText(title.getValue());
             authorLabel.setText(author.getValue());
 
             textArea.setValue(lyrics.getLyrics());
             textArea.setLabel("Title: " + titleLabel.getText() + " | Author: " + authorLabel.getText());
+            title.clear();
+            author.clear();
         }
 
         if(title.isEmpty()) {

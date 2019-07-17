@@ -1,15 +1,19 @@
 package com.gpsy_front.service;
 
 import com.google.gson.Gson;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
 
-public class ServerConnector {
+public final class ServerConnector {
 
     private static ServerConnector serverConnector;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ServerConnector.class);
 
     private ServerConnector() {}
 
@@ -28,11 +32,13 @@ public class ServerConnector {
         Gson gson = new Gson();
         String jsonContent = gson.toJson(objectToSend);
         URI uri = UriComponentsBuilder.fromHttpUrl(GPSY_API_ROOT + httpTailPath).build().encode().toUri();
+
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
+
         HttpEntity<String> entity = new HttpEntity<>(jsonContent, headers);
         ResponseEntity answer = restTemplate.exchange(uri, httpMethod, entity, String.class);
-        System.out.println(answer.toString());
+        LOGGER.info(answer.toString());
     }
 
     public RestTemplate getRestTemplate() {

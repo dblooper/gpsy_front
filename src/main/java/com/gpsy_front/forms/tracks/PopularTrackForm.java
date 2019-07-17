@@ -4,7 +4,7 @@ import com.gpsy_front.domain.ParentTrack;
 import com.gpsy_front.domain.Playlist;
 import com.gpsy_front.domain.PopularTrack;
 import com.gpsy_front.forms.ParentForm;
-import com.gpsy_front.service.RestService;
+import com.gpsy_front.service.RestSpotifyService;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Label;
@@ -16,7 +16,7 @@ import java.util.stream.Collectors;
 
 public class PopularTrackForm extends VerticalLayout implements ParentForm {
 
-    private RestService restService = RestService.getInstance();
+    private RestSpotifyService restSpotifyService = RestSpotifyService.getInstance();
     private VerticalLayout verticalLayout = new VerticalLayout();
     private PlaylistChoseForm playlistChoseForm;
     private Grid<PopularTrack> popularTracksGrid = new Grid<>(PopularTrack.class);
@@ -26,8 +26,6 @@ public class PopularTrackForm extends VerticalLayout implements ParentForm {
     public PopularTrackForm(List<Playlist> playlists) {
 
         playlistChoseForm = new PlaylistChoseForm(this, playlists);
-        gridLabel.setClassName("grid-title");
-        gridLabel.setSizeFull();
 
         popularTracksGrid.setColumns("title", "artists", "popularity");
         popularTracksGrid.setSelectionMode(Grid.SelectionMode.MULTI);
@@ -38,14 +36,17 @@ public class PopularTrackForm extends VerticalLayout implements ParentForm {
             }
             setVisiblePlaylistForm();
         });
-        popularTracksGrid.setItems(restService.getPopularTracks());
+        popularTracksGrid.setItems(restSpotifyService.getPopularTracks());
         playlistChoseForm.setVisible(false);
         verticalLayout.add(gridLabel, popularTracksGrid, textField, playlistChoseForm);
 
+        add(verticalLayout);
+
+        setSizeFull();
+        gridLabel.setClassName("grid-title");
+        gridLabel.setSizeFull();
         verticalLayout.addClassName("forms-style");
         verticalLayout.setSizeFull();
-        add(verticalLayout);
-        setSizeFull();
         popularTracksGrid.setHeightByRows(true);
     }
 
@@ -68,7 +69,7 @@ public class PopularTrackForm extends VerticalLayout implements ParentForm {
         Set<ParentTrack> parentTracks = popularTracksGrid.asMultiSelect().getSelectedItems().stream()
                 .map(track -> (ParentTrack)track)
                 .collect(Collectors.toSet());
-        restService.updatePlaylistWithPopularTrack(playlistChoseForm.getCurrentPlaylist(), parentTracks);
+        restSpotifyService.updatePlaylistWithPopularTrack(playlistChoseForm.getCurrentPlaylist(), parentTracks);
     }
 
     @Override

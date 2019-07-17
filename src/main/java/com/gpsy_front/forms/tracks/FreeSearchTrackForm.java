@@ -4,9 +4,10 @@ import com.gpsy_front.domain.ParentTrack;
 import com.gpsy_front.domain.Playlist;
 import com.gpsy_front.domain.SearchedTrack;
 import com.gpsy_front.forms.ParentForm;
-import com.gpsy_front.service.RestService;
+import com.gpsy_front.service.RestSpotifyService;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Anchor;
 import com.vaadin.flow.component.html.Label;
@@ -22,7 +23,7 @@ import java.util.stream.Collectors;
 public class FreeSearchTrackForm extends VerticalLayout implements ParentForm {
 
     private VerticalLayout verticalLayout = new VerticalLayout();
-    private RestService restService = RestService.getInstance();
+    private RestSpotifyService restSpotifyService = RestSpotifyService.getInstance();
     private HorizontalLayout mainLayout = new HorizontalLayout();
     private Button searchButton = new Button("Search");
     private TextField searchfield = new TextField("Search track");
@@ -35,11 +36,8 @@ public class FreeSearchTrackForm extends VerticalLayout implements ParentForm {
     public FreeSearchTrackForm(List<Playlist> playlists) {
 
         this.playlistChoseForm = new PlaylistChoseForm(this, playlists);
-        mainLayout.add(searchfield, searchButton);
-        mainLayout.setAlignItems(Alignment.END);
-        searchLabel.setClassName("grid-title");
-        searchLabel.setSizeFull();
 
+        mainLayout.add(searchfield, searchButton);
         searchButton.addClickListener(event -> searchForTracks());
         searchfield.setPlaceholder("Type title here");
 
@@ -67,15 +65,21 @@ public class FreeSearchTrackForm extends VerticalLayout implements ParentForm {
 
         verticalLayout.add(searchLabel, mainLayout, searchedTrackGrid, textField, playlistChoseForm);
         add(verticalLayout);
+
         setSizeFull();
+        searchLabel.setClassName("grid-title");
+        searchLabel.setSizeFull();
         verticalLayout.setClassName("forms-style");
         verticalLayout.setSizeFull();
         searchedTrackGrid.setHeightByRows(true);
+        searchButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        mainLayout.setAlignItems(Alignment.END);
+
     }
 
     private void searchForTracks() {
         if(searchfield.getValue().length() > 0) {
-           searchedTrackGrid.setItems(restService.getSearchedTracks(searchfield.getValue()));
+           searchedTrackGrid.setItems(restSpotifyService.getSearchedTracks(searchfield.getValue()));
         }
     }
 
@@ -97,7 +101,7 @@ public class FreeSearchTrackForm extends VerticalLayout implements ParentForm {
         Set<ParentTrack> parentTracks = searchedTrackGrid.asMultiSelect().getSelectedItems().stream()
                 .map(track -> (ParentTrack)track)
                 .collect(Collectors.toSet());
-        restService.updatePlaylistWithPopularTrack(playlistChoseForm.getCurrentPlaylist(), parentTracks);
+        restSpotifyService.updatePlaylistWithPopularTrack(playlistChoseForm.getCurrentPlaylist(), parentTracks);
         searchedTrackGrid.setItems(new ArrayList<>());
         searchfield.setValue("");
     }

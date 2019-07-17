@@ -7,7 +7,7 @@ import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
 
-@Route(value = "playlists", layout = MainNavigationBar.class)
+@Route(value = "playlists", layout = NavigationBar.class)
 public class Playlists extends Div {
 
     HorizontalLayout horizontalLayout = new HorizontalLayout();

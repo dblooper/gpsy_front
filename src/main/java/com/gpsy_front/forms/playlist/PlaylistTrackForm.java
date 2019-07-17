@@ -2,7 +2,7 @@ package com.gpsy_front.forms.playlist;
 
 import com.gpsy_front.domain.Playlist;
 import com.gpsy_front.domain.PlaylistTrack;
-import com.gpsy_front.service.RestService;
+import com.gpsy_front.service.RestSpotifyService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.grid.Grid;
@@ -18,7 +18,7 @@ import java.util.Set;
 
 public class PlaylistTrackForm extends VerticalLayout {
 
-    private RestService restService = RestService.getInstance();
+    private RestSpotifyService restSpotifyService = RestSpotifyService.getInstance();
     private Grid<PlaylistTrack> playlistTrackGrid = new Grid<>(PlaylistTrack.class);
     private VerticalLayout mainContent = new VerticalLayout();
     private HorizontalLayout updateNameArea = new HorizontalLayout();
@@ -30,18 +30,24 @@ public class PlaylistTrackForm extends VerticalLayout {
     private Binder<Playlist> playlistBinder = new Binder<>(Playlist.class);
 
     public PlaylistTrackForm(PlaylistFormTopLayout playlistFormTopLayout) {
+
         this.playlistFormTopLayout = playlistFormTopLayout;
 
         playlistTrackGrid.setColumns("title", "artists");
         playlistTrackGrid.setSelectionMode(Grid.SelectionMode.MULTI);
         playlistTrackGrid.setItems(tracks);
+
         updateNameArea.add(name, updateNameButton);
         updateNameArea.setAlignItems(Alignment.END);
+
+        playlistBinder.bindInstanceFields(this);
+
         deleteButton.addClickListener(event ->{
             deleteTrack();
             playlistTrackGrid.setItems(tracks);
             playlistFormTopLayout.refresh();
         });
+
         updateNameButton.addClickListener(event -> {
             updatePlaylist();
             playlistFormTopLayout.refresh();
@@ -49,10 +55,9 @@ public class PlaylistTrackForm extends VerticalLayout {
 
         mainContent.add(updateNameArea, playlistTrackGrid, deleteButton);
         add(mainContent);
-        mainContent.addClassName("forms-style");
-        mainContent.setMargin(false);
-        playlistBinder.bindInstanceFields(this);
 
+//        mainContent.addClassName("forms-style");
+//        mainContent.setMargin(false);
         updateNameButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         deleteButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         setSizeFull();
@@ -78,7 +83,7 @@ public class PlaylistTrackForm extends VerticalLayout {
 
     void updatePlaylist() {
         Playlist playlist = playlistFormTopLayout.getCurrentPlaylist();
-        restService.updatePlaylistDetails(new Playlist(name.getValue(), playlist.getPlaylistStringId(), playlist.getTracks()));
+        restSpotifyService.updatePlaylistDetails(new Playlist(name.getValue(), playlist.getPlaylistStringId(), playlist.getTracks()));
         playlistFormTopLayout.updateInformation(playlist.getName() + " has been updated!");
         Notification.show(playlist.getName() + " has been updated!");
     }
@@ -86,7 +91,7 @@ public class PlaylistTrackForm extends VerticalLayout {
     public void deleteTrack() {
         Set<PlaylistTrack> trackToDelete = playlistTrackGrid.asMultiSelect().getSelectedItems();
         Playlist playlistToUpdate = playlistFormTopLayout.getCurrentPlaylist();
-        restService.deleteTrackFromPlaylist(new Playlist(playlistToUpdate.getName(), playlistToUpdate.getPlaylistStringId(), new ArrayList<>(trackToDelete)));
+        restSpotifyService.deleteTrackFromPlaylist(new Playlist(playlistToUpdate.getName(), playlistToUpdate.getPlaylistStringId(), new ArrayList<>(trackToDelete)));
         playlistFormTopLayout.updateInformation("Deleted: " + playlistTrackGrid.asMultiSelect().getSelectedItems().toString());
         Notification.show("Deleted: " + playlistTrackGrid.asMultiSelect().getSelectedItems().toString());
     }

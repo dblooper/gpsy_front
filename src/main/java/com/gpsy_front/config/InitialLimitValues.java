@@ -1,4 +1,4 @@
-package com.gpsy_front.service;
+package com.gpsy_front.config;
 
 public class InitialLimitValues {
 

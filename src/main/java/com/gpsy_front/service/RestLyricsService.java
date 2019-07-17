@@ -1,6 +1,9 @@
 package com.gpsy_front.service;
 
+import com.gpsy_front.domain.Lyrics;
 import com.gpsy_front.domain.LyricsLibrary;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.*;
 import org.springframework.web.client.RestClientException;
 import org.springframework.web.util.UriComponentsBuilder;
@@ -13,19 +16,34 @@ import java.util.Optional;
 
 import static com.gpsy_front.service.ServerConnector.GPSY_API_ROOT;
 
-public final class LyricsService {
+public final class RestLyricsService {
 
-    private static LyricsService lyricsService;
+    private static final Logger LOGGER = LoggerFactory.getLogger(RestLyricsService.class);
+
+    private static RestLyricsService restLyricsService;
     private ServerConnector serverConnector = ServerConnector.getInstance();
 
-    private LyricsService() {
+    private RestLyricsService() {
     }
 
-    public static LyricsService getInstance() {
-        if(lyricsService == null) {
-            lyricsService = new LyricsService();
+    public static RestLyricsService getInstance() {
+        if(restLyricsService == null) {
+            restLyricsService = new RestLyricsService();
         }
-        return  lyricsService;
+        return restLyricsService;
+    }
+
+    public Lyrics getLyrics(String title, String author) {
+        URI uri = UriComponentsBuilder.fromHttpUrl(GPSY_API_ROOT + "/musixmatch/lyrics")
+                .queryParam("title", title)
+                .queryParam("author", author)
+                .build().encode().toUri();
+        try {
+            return  Optional.ofNullable(serverConnector.getRestTemplate().getForObject(uri, Lyrics.class)).orElse(new Lyrics("n/a", "/na","n/a"));
+        }catch(RestClientException e) {
+            LOGGER.error(e.getMessage(), e);
+            return new Lyrics("n/a", "/na","n/a");
+        }
     }
 
     public List<LyricsLibrary> getLyricsLibrary() {
@@ -37,7 +55,7 @@ public final class LyricsService {
                     .map(Arrays::asList)
                     .orElse(new ArrayList<>());
         }catch(RestClientException e) {
-            System.out.println(e.getMessage());
+            LOGGER.error(e.getMessage(), e);
             return new ArrayList<>();
         }
     }

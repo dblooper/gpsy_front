@@ -1,9 +1,9 @@
 package com.gpsy_front.forms.lyrics;
 
 import com.gpsy_front.domain.LyricsLibrary;
-import com.gpsy_front.service.LyricsService;
-import com.gpsy_front.service.RestService;
+import com.gpsy_front.service.RestLyricsService;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.html.Label;
 import com.vaadin.flow.component.notification.Notification;
@@ -15,7 +15,7 @@ import java.util.ArrayList;
 
 public class LyricsLibraryForm extends VerticalLayout {
 
-    private LyricsService lyricsService = LyricsService.getInstance();
+    private RestLyricsService restLyricsService = RestLyricsService.getInstance();
     private Button addLibraryButton = new Button("Create Library");
     private TextField libraryName = new TextField("Library name");
     private Grid<LyricsLibrary> lyricsLibraryGrid = new Grid<>(LyricsLibrary.class);
@@ -26,13 +26,11 @@ public class LyricsLibraryForm extends VerticalLayout {
     private Label mainLabel = new Label("Lyrics Library");
 
     public LyricsLibraryForm(LyricsWindow lyricsWindow) {
+
         this.lyricsInLibraryForm = new LyricsInLibraryForm(lyricsWindow, this);
 
-        mainLabel.setClassName("grid-title");
-        mainLabel.setSizeFull();
-
         lyricsLibraryGrid.setColumns("libraryName");
-        lyricsLibraryGrid.setItems(lyricsService.getLyricsLibrary());
+        lyricsLibraryGrid.setItems(restLyricsService.getLyricsLibrary());
         lyricsLibraryGrid.setSelectionMode(Grid.SelectionMode.SINGLE);
         lyricsLibraryGrid.asSingleSelect().addValueChangeListener(event ->
                     lyricsInLibraryForm.setLibrary(lyricsLibraryGrid.asSingleSelect().getValue()));
@@ -40,28 +38,31 @@ public class LyricsLibraryForm extends VerticalLayout {
         addLibraryButton.addClickListener(event -> addLibrary());
 
         createLibraryLayout.add(libraryName, addLibraryButton);
-        createLibraryLayout.setAlignItems(Alignment.END);
 
         libraryLayout.add(lyricsLibraryGrid);
-        libraryLayout.setWidth("40%");
 
         libraryMainLayout.add(libraryLayout, lyricsInLibraryForm);
         libraryMainLayout.setWidthFull();
 
         add(mainLabel, libraryMainLayout, createLibraryLayout);
-        setSizeFull();
 
+        setSizeFull();
+        libraryLayout.setWidth("100%");
+        createLibraryLayout.setAlignItems(Alignment.END);
+        mainLabel.setClassName("grid-title");
+        mainLabel.setSizeFull();
+        addLibraryButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
     }
 
     private void addLibrary() {
         String newLibraryName = libraryName.getValue();
-        lyricsService.createLibrary(new LyricsLibrary(newLibraryName, new ArrayList<>()));
+        restLyricsService.createLibrary(new LyricsLibrary(newLibraryName, new ArrayList<>()));
         refresh();
         Notification.show("New library: " + newLibraryName + " has been created");
     }
 
     public void refresh() {
-        lyricsLibraryGrid.setItems(lyricsService.getLyricsLibrary());
+        lyricsLibraryGrid.setItems(restLyricsService.getLyricsLibrary());
     }
 
     public Grid<LyricsLibrary> getLyricsLibraryGrid() {

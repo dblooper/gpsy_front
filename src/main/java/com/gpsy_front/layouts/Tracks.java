@@ -2,7 +2,7 @@ package com.gpsy_front.layouts;
 
 import com.gpsy_front.domain.Playlist;
 import com.gpsy_front.forms.tracks.*;
-import com.gpsy_front.service.RestService;
+import com.gpsy_front.service.RestSpotifyService;
 import com.vaadin.flow.component.html.Div;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
 import com.vaadin.flow.component.orderedlayout.VerticalLayout;
@@ -10,7 +10,7 @@ import com.vaadin.flow.router.Route;
 
 import java.util.List;
 
-@Route(value = "tracks", layout = MainNavigationBar.class)
+@Route(value = "tracks", layout = NavigationBar.class)
 public class Tracks extends Div {
 
     private VerticalLayout verticalLayout1 = new VerticalLayout();
@@ -20,11 +20,11 @@ public class Tracks extends Div {
     private MostFrequentTrackForm mostFrequentTrackForm;
     private PopularTrackForm popularTrackForm;
     private RecommendedTrackForm recommendedTrackForm;
-    private RestService restService = RestService.getInstance();
+    private RestSpotifyService restSpotifyService = RestSpotifyService.getInstance();
     private FreeSearchTrackForm freeSearchTrackForm;
 
     public Tracks() {
-        List<Playlist> playlists = restService.getPlaylistsFromApi();
+        List<Playlist> playlists = restSpotifyService.getPlaylistsFromApi();
         this.recentTrackForm = new RecentTrackForm(playlists);
         this.mostFrequentTrackForm = new MostFrequentTrackForm(playlists);
         this.recommendedTrackForm = new RecommendedTrackForm(playlists);

@@ -2,7 +2,6 @@ package com.gpsy_front.forms.tracks;
 
 import com.gpsy_front.domain.Playlist;
 import com.gpsy_front.forms.ParentForm;
-import com.gpsy_front.service.RestService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.combobox.ComboBox;
@@ -19,19 +18,22 @@ public class PlaylistChoseForm extends FormLayout {
     private ComboBox<Playlist> playlistSelect = new ComboBox<>("Playlist");
 
     public PlaylistChoseForm(ParentForm parentForm, List<Playlist> playlists) {
+
         this.parentForm = parentForm;
+
         playlistSelect.setLabel("Playlist");
         playlistSelect.setItems(playlists);
         playlistSelect.setItemLabelGenerator(Playlist::getName);
         playlistSelect.setPlaceholder("Choose the playlist");
         playlistSelect.setItems(playlists);
 
-        acceptButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         acceptButton.addClickListener(event -> save(playlistSelect.getValue()));
 
         verticalLayout.add(playlistSelect, acceptButton);
         add(verticalLayout);
+
         setSizeFull();
+        acceptButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
     }
 
     public Playlist getCurrentPlaylist() {

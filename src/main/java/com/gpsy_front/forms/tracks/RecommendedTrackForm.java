@@ -4,7 +4,7 @@ import com.gpsy_front.domain.ParentTrack;
 import com.gpsy_front.domain.Playlist;
 import com.gpsy_front.domain.RecommendedTrack;
 import com.gpsy_front.forms.ParentForm;
-import com.gpsy_front.service.RestService;
+import com.gpsy_front.service.RestSpotifyService;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -20,7 +20,7 @@ import java.util.stream.Collectors;
 
 public class RecommendedTrackForm extends VerticalLayout implements ParentForm {
 
-    private RestService restService = RestService.getInstance();
+    private RestSpotifyService restSpotifyService = RestSpotifyService.getInstance();
     private PlaylistChoseForm playlistChoseForm;
     private VerticalLayout verticalLayout = new VerticalLayout();
     private HorizontalLayout horizontalLayout = new HorizontalLayout();
@@ -30,13 +30,11 @@ public class RecommendedTrackForm extends VerticalLayout implements ParentForm {
     private Button refreshButton = new Button("Refresh");
 
     public RecommendedTrackForm(List<Playlist> playlists) {
+
         this.playlistChoseForm = new PlaylistChoseForm(this, playlists);
-        gridLabel.setClassName("grid-title");
-        gridLabel.setSizeFull();
 
         horizontalLayout.add(gridLabel, refreshButton);
-        horizontalLayout.setAlignItems(Alignment.CENTER);
-        horizontalLayout.setSizeFull();
+
         recommendedTracksGrid.setColumns("title", "artists");
         recommendedTracksGrid.addComponentColumn(track -> {
                     if(track.getSample() != null) {
@@ -58,18 +56,24 @@ public class RecommendedTrackForm extends VerticalLayout implements ParentForm {
             }
             setVisiblePlaylistForm();
         });
-        recommendedTracksGrid.setItems(restService.getRecommendedTrcksFromApi());
+        recommendedTracksGrid.setItems(restSpotifyService.getRecommendedTrcksFromApi());
 
-        refreshButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         refreshButton.addClickListener(event ->
-            recommendedTracksGrid.setItems(restService.getRecommendedTrcksFromApi()));
+            recommendedTracksGrid.setItems(restSpotifyService.getRecommendedTrcksFromApi()));
 
         playlistChoseForm.setVisible(false);
         verticalLayout.add(horizontalLayout, recommendedTracksGrid, textField, playlistChoseForm);
+
+        add(verticalLayout);
+
+        setSizeFull();
+        gridLabel.setClassName("grid-title");
+        gridLabel.setSizeFull();
         verticalLayout.addClassName("forms-style");
         verticalLayout.setSizeFull();
-        add(verticalLayout);
-        setSizeFull();
+        horizontalLayout.setAlignItems(Alignment.CENTER);
+        horizontalLayout.setSizeFull();
+        refreshButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         recommendedTracksGrid.setHeightByRows(true);
     }
 
@@ -91,7 +95,7 @@ public class RecommendedTrackForm extends VerticalLayout implements ParentForm {
         Set<ParentTrack> parentTracks = recommendedTracksGrid.asMultiSelect().getSelectedItems().stream()
                 .map(track -> (ParentTrack)track)
                 .collect(Collectors.toSet());
-        restService.updatePlaylistWithPopularTrack(playlistChoseForm.getCurrentPlaylist(), parentTracks);
+        restSpotifyService.updatePlaylistWithPopularTrack(playlistChoseForm.getCurrentPlaylist(), parentTracks);
     }
 
     @Override

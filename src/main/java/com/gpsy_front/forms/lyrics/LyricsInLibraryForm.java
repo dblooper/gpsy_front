@@ -2,8 +2,9 @@ package com.gpsy_front.forms.lyrics;
 
 import com.gpsy_front.domain.Lyrics;
 import com.gpsy_front.domain.LyricsLibrary;
-import com.gpsy_front.service.LyricsService;
+import com.gpsy_front.service.RestLyricsService;
 import com.vaadin.flow.component.button.Button;
+import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.grid.Grid;
 import com.vaadin.flow.component.notification.Notification;
 import com.vaadin.flow.component.orderedlayout.HorizontalLayout;
@@ -28,10 +29,11 @@ public class LyricsInLibraryForm extends VerticalLayout {
     private Grid<Lyrics> lyricsGrid = new Grid<>(Lyrics.class);
     private Binder<LyricsLibrary> lyricsLibraryBinder = new Binder<>(LyricsLibrary.class);
     private LyricsWindow lyricsWindow;
-    private LyricsService lyricsService = LyricsService.getInstance();
+    private RestLyricsService restLyricsService = RestLyricsService.getInstance();
     private LyricsLibraryForm lyricsLibraryForm;
 
     public LyricsInLibraryForm(LyricsWindow lyricsWindow, LyricsLibraryForm lyricsLibraryForm) {
+
         this.lyricsWindow = lyricsWindow;
         this.lyricsLibraryForm = lyricsLibraryForm;
 
@@ -62,6 +64,10 @@ public class LyricsInLibraryForm extends VerticalLayout {
         add(updateForm, lyricsGrid, buttonsForm);
         setVisible(false);
         lyricsGrid.setSizeFull();
+        addLyricsButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        updateButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        deleteLyricsButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        deleteLibraryButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
         addLyricsButton.setVisible(false);
         deleteLyricsButton.setVisible(false);
         lyricsButtonsForm.setAlignItems(Alignment.END);
@@ -91,7 +97,7 @@ public class LyricsInLibraryForm extends VerticalLayout {
 
     private void deleteLibrary() {
         LyricsLibrary libraryToDelete= lyricsLibraryForm.getLyricsLibraryGrid().asSingleSelect().getValue();
-        lyricsService.deleteLibrary(libraryToDelete.getId());
+        restLyricsService.deleteLibrary(libraryToDelete.getId());
         lyricsLibraryForm.refresh();
         Notification.show("Library: " + libraryToDelete.getLibraryName() + " has been deleted");
     }
@@ -100,7 +106,7 @@ public class LyricsInLibraryForm extends VerticalLayout {
         LyricsLibrary currentLibrarySelection = lyricsLibraryForm.getLyricsLibraryGrid().asSingleSelect().getValue();
         List<Lyrics> lyricsToDelete = new ArrayList<>();
         lyricsToDelete.add(lyricsGrid.asSingleSelect().getValue());
-        lyricsService.deleteLyricsFromLibrary(new LyricsLibrary(currentLibrarySelection.getId(),
+        restLyricsService.deleteLyricsFromLibrary(new LyricsLibrary(currentLibrarySelection.getId(),
                                                                 currentLibrarySelection.getLibraryName(),
                                                                 lyricsToDelete));
         lyricsLibraryForm.refresh();
@@ -108,7 +114,6 @@ public class LyricsInLibraryForm extends VerticalLayout {
     }
 
     private void setLyricsInWindow() {
-
         lyricsWindow.setLyrics(lyricsGrid.asSingleSelect().getValue());
 
         if(lyricsGrid.asSingleSelect().getValue() == null) {
@@ -122,7 +127,7 @@ public class LyricsInLibraryForm extends VerticalLayout {
         if(libraryName.getValue().length() > 3) {
             LyricsLibrary currentLibrary = lyricsLibraryForm.getLyricsLibraryGrid().asSingleSelect().getValue();
             String newLibraryName = libraryName.getValue();
-            lyricsService.updateLibraryName(new LyricsLibrary(currentLibrary.getId(), newLibraryName, new ArrayList<>()));
+            restLyricsService.updateLibraryName(new LyricsLibrary(currentLibrary.getId(), newLibraryName, new ArrayList<>()));
             lyricsLibraryForm.refresh();
             Notification.show("Library name has been updated to: " + newLibraryName);
         }else {
@@ -134,7 +139,7 @@ public class LyricsInLibraryForm extends VerticalLayout {
         LyricsLibrary currentLibrary = lyricsLibraryForm.getLyricsLibraryGrid().asSingleSelect().getValue();
         List<Lyrics> lyricstToAddList = new ArrayList<>();
         lyricstToAddList.add(lyricsWindow.getCurrentLyrics());
-        lyricsService.addLyricsToLibrary(new LyricsLibrary(currentLibrary.getId(), currentLibrary.getLibraryName(),lyricstToAddList));
+        restLyricsService.addLyricsToLibrary(new LyricsLibrary(currentLibrary.getId(), currentLibrary.getLibraryName(),lyricstToAddList));
         lyricsLibraryForm.refresh();
         Notification.show("Currently shown lyrics: " + lyricstToAddList.get(0).getTitle() + "have been saved to: " + currentLibrary.getLibraryName());
     }

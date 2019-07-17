@@ -6,7 +6,7 @@ import com.vaadin.flow.component.orderedlayout.VerticalLayout;
 import com.vaadin.flow.router.Route;
 import com.vaadin.flow.router.RouterLayout;
 
-@Route(value = "lyrics", layout = MainNavigationBar.class)
+@Route(value = "lyrics", layout = NavigationBar.class)
 public class Lyrics extends Div implements RouterLayout {
 
     VerticalLayout verticalLayout = new VerticalLayout();

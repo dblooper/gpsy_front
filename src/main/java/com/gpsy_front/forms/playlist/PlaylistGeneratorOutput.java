@@ -2,7 +2,7 @@ package com.gpsy_front.forms.playlist;
 
 import com.gpsy_front.domain.RecommendedPlaylist;
 import com.gpsy_front.domain.RecommendedTrack;
-import com.gpsy_front.service.RestService;
+import com.gpsy_front.service.RestSpotifyService;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
 import com.vaadin.flow.component.grid.Grid;
@@ -21,11 +21,10 @@ public class PlaylistGeneratorOutput extends VerticalLayout {
     private Button newPlaylistTracksButton = new Button("Generate new set");
     NumberField numberField = new NumberField("Tracks quantity");
     private Label gridLabel = new Label("");
-    private RestService restService = RestService.getInstance();
+    private RestSpotifyService restSpotifyService = RestSpotifyService.getInstance();
+    private int initialGeneratedPlaylistTracksValue;
 
     public PlaylistGeneratorOutput() {
-
-        gridLabel.setClassName("grid-title");
 
         playlistTrackGrid.setColumns("title", "artists");
         playlistTrackGrid.addComponentColumn(track -> {
@@ -41,45 +40,58 @@ public class PlaylistGeneratorOutput extends VerticalLayout {
         }).setHeader("Try it out");
 
         horizontalLayout.add(numberField, updateButton);
-        horizontalLayout.setAlignItems(Alignment.END);
         verticalLayout.add(gridLabel, playlistTrackGrid, horizontalLayout, newPlaylistTracksButton);
-        verticalLayout.addClassName("forms-style");
 
-        RecommendedPlaylist recommendedPlaylist = restService.getRecommendedPlaylist();
+        RecommendedPlaylist recommendedPlaylist = restSpotifyService.getRecommendedPlaylist();
         gridLabel.setText("Forecast for: " + recommendedPlaylist.getName() + " | Total: " + recommendedPlaylist.getNumberOfTracks());
         playlistTrackGrid.setItems(recommendedPlaylist.getPlaylistTracks());
 
         numberField.setMin(1);
         numberField.setMax(50);
         numberField.setHasControls(true);
+
         numberField.setValue(recommendedPlaylist.getNumberOfTracks().doubleValue());
-        numberField.addValueChangeListener(event -> setVisibleButton());
+        numberField.addValueChangeListener(event -> {
+            int value = numberField.getValue().intValue();
+            if(value < initialGeneratedPlaylistTracksValue)
+            setVisibleButton();
+        });
 
-        updateButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
-        newPlaylistTracksButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        initialGeneratedPlaylistTracksValue = numberField.getValue().intValue();
+
         updateButton.setVisible(false);
-
         updateButton.addClickListener(event -> updateAndRefresh(numberField.getValue().intValue()));
         newPlaylistTracksButton.addClickListener(event -> generateNewSetOfTracks(numberField.getValue().intValue()));
         add(verticalLayout);
+
+        gridLabel.setClassName("grid-title");
+        gridLabel.setWidthFull();
+        verticalLayout.addClassName("forms-style");
+        horizontalLayout.setAlignItems(Alignment.END);
+        updateButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+        newPlaylistTracksButton.addThemeVariants(ButtonVariant.LUMO_PRIMARY);
+
     }
 
     private void updateAndRefresh(int value) {
-        restService.changeQuantityOfRecommendedTracks(value);
-        RecommendedPlaylist recommendedPlaylist = restService.getRecommendedPlaylist();
+        restSpotifyService.changeQuantityOfRecommendedTracks(value);
+        RecommendedPlaylist recommendedPlaylist = restSpotifyService.getRecommendedPlaylist();
         playlistTrackGrid.setItems(recommendedPlaylist.getPlaylistTracks());
         gridLabel.setText("Forecast for: " + recommendedPlaylist.getName() + " | Total: " + recommendedPlaylist.getNumberOfTracks());
         updateButton.setVisible(false);
+        initialGeneratedPlaylistTracksValue = numberField.getValue().intValue();
     }
 
     private void generateNewSetOfTracks(int value) {
-        restService.updateFetchRecommendedPlaylist(value);
-        RecommendedPlaylist recommendedPlaylist = restService.getRecommendedPlaylist();
+        restSpotifyService.updateFetchRecommendedPlaylist(value);
+        RecommendedPlaylist recommendedPlaylist = restSpotifyService.getRecommendedPlaylist();
         playlistTrackGrid.setItems(recommendedPlaylist.getPlaylistTracks());
         gridLabel.setText("Forecast for: " + recommendedPlaylist.getName() + " | Total: " + recommendedPlaylist.getNumberOfTracks());
+        updateButton.setVisible(false);
+        initialGeneratedPlaylistTracksValue = numberField.getValue().intValue();
     }
 
-    void setVisibleButton() {
+    private void setVisibleButton() {
         updateButton.setVisible(true);
     }
 

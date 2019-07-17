@@ -1,7 +1,7 @@
 package com.gpsy_front.forms.playlist;
 
 import com.gpsy_front.domain.Playlist;
-import com.gpsy_front.service.RestService;
+import com.gpsy_front.service.RestSpotifyService;
 import com.vaadin.flow.component.Text;
 import com.vaadin.flow.component.button.Button;
 import com.vaadin.flow.component.button.ButtonVariant;
@@ -15,7 +15,7 @@ public class CreatePlaylistForm extends VerticalLayout {
 
     private VerticalLayout verticalLayout = new VerticalLayout();
     private PlaylistFormTopLayout playlistFormTopLayout;
-    private RestService restService = RestService.getInstance();
+    private RestSpotifyService restSpotifyService = RestSpotifyService.getInstance();
     private TextField textField = new TextField();
     private Text text = new Text("");
     private Button button = new Button("Create a playlist");
@@ -28,7 +28,7 @@ public class CreatePlaylistForm extends VerticalLayout {
 
         button.addClickListener(event -> {
             String newPlaylistName = textField.getValue();
-            restService.createNewPlaylist(new Playlist(newPlaylistName, "", new ArrayList<>()));
+            restSpotifyService.createNewPlaylist(new Playlist(newPlaylistName, "", new ArrayList<>()));
             playlistFormTopLayout.refresh();
             Notification.show("A new playlist: " + newPlaylistName + " has been created on your Spotify account!");
         });
